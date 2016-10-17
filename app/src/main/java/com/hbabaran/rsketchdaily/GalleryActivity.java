@@ -13,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by wren on 10/14/2016.
  */
@@ -48,7 +52,9 @@ public class GalleryActivity extends AppCompatActivity {
 
     private void actionBarSetup() {
         ActionBar ab = getSupportActionBar();
-        new PostLoader("placeholderdate", this).execute(); //TODO pass date in (utc??) and get various dates (for now just take top result, ie today)
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        Calendar currtime = Calendar.getInstance(timeZone);
+        new PostLoader(currtime, this).execute(); //TODO pass date in (utc??) and get various dates (for now just take top result, ie today)
     }
 
     protected void setActionBarText(String text){
