@@ -1,7 +1,9 @@
 package com.hbabaran.rsketchdaily;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -46,6 +48,14 @@ public class GalleryActivity extends AppCompatActivity {
 
     private void actionBarSetup() {
         ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.loading);
+        new PostLoader("placeholderdate", this).execute(); //TODO pass date in (utc??) and get various dates (for now just take top result, ie today)
     }
+
+    protected void setActionBarText(String text){
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle(text);
+    }
+
+
+
 }
