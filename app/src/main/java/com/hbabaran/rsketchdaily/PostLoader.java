@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -25,49 +26,22 @@ import static java.lang.String.valueOf;
  * Created by wren on 10/16/2016.
  */
 
-public class PostLoader extends AsyncTask<Void, String, String> {
+public class PostLoader{
 
-    private Date date;
-    private Intent sendInfo;
-
-    public PostLoader(Date date, Post post){
-        this.date = date;
+    public static Post getPostByDate(Date date){
+        return new Post(date, getPostJSONByDate(date));
     }
 
-    protected void onPreExecute() {
-        //gallery.setActionBarText(gallery.getResources().getString(R.string.loading));
-    }
-
-    public String doInBackground(Void... v) { //TODO use "date" to get post data per date
-        return getPostTitle();
-    }
-
-    protected void onPostExecute(String result) {
-        //sendInfo = new Intent()
-    }
-
-
-    private String getPostTitle(){
-        String title = "Error parsing title";
-        JSONObject post = getPostByDate();
-        if (post != null) {
-            try {
-                title = post.getJSONObject("data").getString("title");
-            } catch (JSONException e) {
-                System.err.println("error parsing post title: " + e);
-            }
-        }
-        return title;
-    }
-
-    private JSONObject getPostByDate(){
+    //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
+    //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
+    private static JSONObject getPostJSONByDate(Date date){
         URL url;
         String redditJSONStr;
         JSONObject frontJson;
         JSONObject post;
         try {
-            url = buildPostURLByDate();
-            redditJSONStr = getJSONStr(url);
+            url = buildPostURLByDate(date);
+            redditJSONStr = downloadJSONStr(url);
             frontJson = new JSONObject(redditJSONStr);
             post = frontJson.getJSONObject("data").getJSONArray("children").getJSONObject(0);
         } catch (MalformedURLException e){
@@ -83,7 +57,7 @@ public class PostLoader extends AsyncTask<Void, String, String> {
         return post;
     }
 
-    private URL buildPostURLByDate() throws MalformedURLException{
+    private static URL buildPostURLByDate(Date date) throws MalformedURLException{
         //TODO pull out this hardcoding
         String url_prefix = "https://www.reddit.com/r/SketchDaily/search.json?q=timestamp%3A";
         String url_midfix = "..";
@@ -99,7 +73,7 @@ public class PostLoader extends AsyncTask<Void, String, String> {
         return new URL(url);
     }
 
-    private String getJSONStr(URL url) throws IOException{
+    private static String downloadJSONStr(URL url) throws IOException{
         HttpURLConnection c = null;
         try {
             c = (HttpURLConnection) url.openConnection();
@@ -126,5 +100,27 @@ public class PostLoader extends AsyncTask<Void, String, String> {
                 c.disconnect();
             }
         }
+    }
+
+    public static ArrayList<Comment> parseCommentsFromPost(URL postUrl){
+        String redditJSONStr;
+        JSONObject postJson;
+        try {
+            redditJSONStr = downloadJSONStr(new URL(postUrl + ".json"));
+            postJson = new JSONObject(redditJSONStr);
+            //TODO json stream parsing the postJSON for comments
+        } catch (MalformedURLException e){
+            System.err.println(e);
+            return null;
+        } catch(IOException e) {
+            System.err.println(e);
+            return null;
+        } catch(JSONException e) {
+            System.err.println(e);
+            return null;
+        }
+
+        ArrayList<Comment> comments = new ArrayList<Comment>();
+        return comments;
     }
 }

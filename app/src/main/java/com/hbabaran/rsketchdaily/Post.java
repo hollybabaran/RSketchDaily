@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -16,17 +17,20 @@ class Post {
     private String selftext;
     private Date date; //NOT the direct Unix "date" in the object.
     private URL postURL;
+    ArrayList<Comment> comments;
+
 
     public Post(Date date, JSONObject post){
         this.date = date;
         this.title = "Error loading post";
         this.selftext = "Error loading post";
         this.postURL = null;
+        this.comments = new ArrayList<Comment>();
         if (post != null) {
             try {
                 this.title = post.getJSONObject("data").getString("title");
                 this.selftext = post.getJSONObject("data").getString("selftext");
-                this.postURL = new URL(post.getJSONObject("data").getString("url"));
+                this.postURL = new URL(post.getJSONObject("data").getString("url").replaceAll("\\\\",""));
             } catch (JSONException e) {
                 System.err.println("error parsing post JSON: " + e);
             } catch (MalformedURLException e) {
@@ -58,5 +62,12 @@ class Post {
     }
     public void setPostURL(URL postURL) {
         this.postURL = postURL;
+    }
+
+    public void addComment(Comment comment){
+        this.comments.add(comment);
+    }
+    public ArrayList<Comment> getComments(){
+        return this.comments;
     }
 }

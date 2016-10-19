@@ -34,7 +34,8 @@ public class GalleryActivity extends AppCompatActivity {
 
     private Intent cacheIntent;
     public static final String GALLERY_RECEIVER_TAG = "com.hbabaran.rsketchdaily.gallery_receiver";
-
+    public static final int POST_LOADED = 0;
+    public static final int COMMENT_LOADED = 1;
     public GalleryReceiver mReceiver;
 
     public class GalleryReceiver extends ResultReceiver{
@@ -44,8 +45,15 @@ public class GalleryActivity extends AppCompatActivity {
 
         @Override
         public void onReceiveResult(int resultCode, Bundle resultData)  {
-            System.out.println("galleryactivity received post info send ");
-            setActionBarText(resultData.getString("title"));
+            switch(resultCode){
+                case POST_LOADED:
+                    setActionBarText(resultData.getString("title"));
+                    //TODO self text
+                case COMMENT_LOADED:
+                    //set a comment, something to do with image adapter
+                default:
+            }
+
         }
     }
 

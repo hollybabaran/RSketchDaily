@@ -32,8 +32,7 @@ class PostCacheService extends IntentService {
     private static final String TAG = "PostCacheService";
     public static final String SEND_GALLERY_INFO = "com.hbabaran.rsketchdaily.sendgalleryinfo";
     private Intent intent;
-
-    Post post; //TODO make this multiple posts
+    Post post; //TODO make this multiple posts.
 
     public PostCacheService(){
         super("PostCacheService");
@@ -42,87 +41,28 @@ class PostCacheService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        System.out.println("received request");
+        ResultReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
+        Bundle postinfo =new Bundle();
+
         Date date = new Date(intent.getExtras().getLong("date"));
         if(this.post == null ||
                 this.post.getDate().toPrimitive() != date.toPrimitive()){
-            this.post = new Post(date, getPostByDate(date));
+            this.post = PostLoader.getPostByDate(date);
         }
-        Bundle postinfo =new Bundle();
-        postinfo.putString("title", post.getTitle()); //TODO populate postinfo with info from Post... TODO figure out how to handle eg images??
-        System.out.println("sending info");
-        ResultReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
+
+        postinfo.putString("title", post.getTitle()); //TODO self text
         rec.send(0, postinfo);
-    }
 
-    //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
-    //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
-    private JSONObject getPostByDate(Date date){
-        URL url;
-        String redditJSONStr;
-        JSONObject frontJson;
-        JSONObject post;
-        try {
-            url = buildPostURLByDate(date);
-            redditJSONStr = getJSONStr(url);
-            frontJson = new JSONObject(redditJSONStr);
-            post = frontJson.getJSONObject("data").getJSONArray("children").getJSONObject(0); //TODO here
-        } catch (MalformedURLException e){
-            System.err.println(e);
-            return null;
-        } catch(IOException e) {
-            System.err.println(e);
-            return null;
-        } catch(JSONException e) {
-            System.err.println(e);
-            return null;
-        }
-        return post;
-    }
-
-    private URL buildPostURLByDate(Date date) throws MalformedURLException{
-        //TODO pull out this hardcoding
-        String url_prefix = "https://www.reddit.com/r/SketchDaily/search.json?q=timestamp%3A";
-        String url_midfix = "..";
-        String url_suffix = "&sort=new&restrict_sr=on&syntax=cloudsearch";
-
-        String url = url_prefix +
-                date.getUnix_mintime() +
-                url_midfix +
-                date.getUnix_maxtime() +
-                url_suffix;
-
-        System.out.println("Loading " + url);
-        return new URL(url);
-    }
-
-    private String getJSONStr(URL url) throws IOException{
-        HttpURLConnection c = null;
-        try {
-            c = (HttpURLConnection) url.openConnection();
-            c.connect();
-            int status = c.getResponseCode();
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line+"\n");
-                    }
-                    br.close();
-                    return sb.toString();
-                default:
-                    throw new IOException("Internet Error: " + valueOf(status));
-            }
-        } catch (IOException ex) {
-            throw ex;
-        } finally {
-            if (c != null) {
-                c.disconnect();
+        if(this.post.getComments().isEmpty()){
+            //load the comments and send each one as loaded 
+        } else {
+            for (Comment comment: this.post.getComments()) {
+                Bundle commentInfo = new Bundle();
+                commentInfo.putByteArray("image", comment.getImgByteArray()); //TODO send other info
+                rec.send(1, commentInfo);
             }
         }
     }
+
 
 }
