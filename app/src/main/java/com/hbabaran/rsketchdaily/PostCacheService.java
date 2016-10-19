@@ -1,11 +1,17 @@
 package com.hbabaran.rsketchdaily;
 
+import android.app.IntentService;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBar;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v4.os.ResultReceiver;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,61 +21,52 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import static java.lang.String.valueOf;
 
 /**
- * Created by wren on 10/16/2016.
+ * Created by wren on 17/10/2016.
  */
 
-public class PostLoader extends AsyncTask<Void, String, String> {
+class PostCacheService extends IntentService {
+    private static final String TAG = "PostCacheService";
+    public static final String SEND_GALLERY_INFO = "com.hbabaran.rsketchdaily.sendgalleryinfo";
+    private Intent intent;
 
-    private Date date;
-    private Intent sendInfo;
+    Post post; //TODO make this multiple posts
 
-    public PostLoader(Date date, Post post){
-        this.date = date;
+    public PostCacheService(){
+        super("PostCacheService");
+        this.post = null;
     }
 
-    protected void onPreExecute() {
-        //gallery.setActionBarText(gallery.getResources().getString(R.string.loading));
-    }
-
-    public String doInBackground(Void... v) { //TODO use "date" to get post data per date
-        return getPostTitle();
-    }
-
-    protected void onPostExecute(String result) {
-        //sendInfo = new Intent()
-    }
-
-
-    private String getPostTitle(){
-        String title = "Error parsing title";
-        JSONObject post = getPostByDate();
-        if (post != null) {
-            try {
-                title = post.getJSONObject("data").getString("title");
-            } catch (JSONException e) {
-                System.err.println("error parsing post title: " + e);
-            }
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        System.out.println("received request");
+        Date date = new Date(intent.getExtras().getLong("date"));
+        GalleryActivity.GalleryReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
+        if(this.post == null ||
+                this.post.getDate().toPrimitive() != date.toPrimitive()){
+            this.post = new Post(date, getPostByDate(date));
         }
-        return title;
+        Bundle postinfo =new Bundle();
+        postinfo.putString("title", post.getTitle()); //TODO populate postinfo with info from Post... TODO figure out how to handle eg images??
+        System.out.println("sending info");
+        rec.send(0, postinfo);
     }
 
-    private JSONObject getPostByDate(){
+    //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
+    //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
+    private JSONObject getPostByDate(Date date){
         URL url;
         String redditJSONStr;
         JSONObject frontJson;
         JSONObject post;
         try {
-            url = buildPostURLByDate();
+            url = buildPostURLByDate(date);
             redditJSONStr = getJSONStr(url);
             frontJson = new JSONObject(redditJSONStr);
-            post = frontJson.getJSONObject("data").getJSONArray("children").getJSONObject(0);
+            post = frontJson.getJSONObject("data").getJSONArray("children").getJSONObject(0); //TODO here
         } catch (MalformedURLException e){
             System.err.println(e);
             return null;
@@ -83,7 +80,7 @@ public class PostLoader extends AsyncTask<Void, String, String> {
         return post;
     }
 
-    private URL buildPostURLByDate() throws MalformedURLException{
+    private URL buildPostURLByDate(Date date) throws MalformedURLException{
         //TODO pull out this hardcoding
         String url_prefix = "https://www.reddit.com/r/SketchDaily/search.json?q=timestamp%3A";
         String url_midfix = "..";
@@ -127,4 +124,5 @@ public class PostLoader extends AsyncTask<Void, String, String> {
             }
         }
     }
+
 }

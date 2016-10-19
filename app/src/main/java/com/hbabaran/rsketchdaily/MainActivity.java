@@ -4,13 +4,33 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class MainActivity extends AppCompatActivity {
+
+    Intent postCacheService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.galleryactivity);
-        Intent showToday = new Intent(this, GalleryActivity.class); //TODO later when GalleryActivity is more generic you will need to specify it's a PostGallery and put today's date in the intent
-        this.startActivity(showToday);
+
+        System.out.println("hello, world");
+
+        //postCacheService = new Intent(this, PostCacheService.class);
+        //startService(postCacheService);
+
+        Bundle bundle = new Bundle();
+        bundle.putLong("date", Date.getUnixMintime(Calendar.getInstance()));
+        Intent startToday = new Intent(this, GalleryActivity.class);
+        startToday.putExtras(bundle);
+        startActivity(startToday);
+
+
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        //stopService(postCacheService); //TODO I think this means PostCacheService won't persist but I can't test this right now, so figure this out / make it persist later
     }
 }

@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GalleryActivity" />
+        <service android:name=".PostCacheService" android:exported="false" />
     </application>
 
 </manifest>
