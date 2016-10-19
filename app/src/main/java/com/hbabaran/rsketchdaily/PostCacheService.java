@@ -44,7 +44,6 @@ class PostCacheService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         System.out.println("received request");
         Date date = new Date(intent.getExtras().getLong("date"));
-        GalleryActivity.GalleryReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
         if(this.post == null ||
                 this.post.getDate().toPrimitive() != date.toPrimitive()){
             this.post = new Post(date, getPostByDate(date));
@@ -52,6 +51,7 @@ class PostCacheService extends IntentService {
         Bundle postinfo =new Bundle();
         postinfo.putString("title", post.getTitle()); //TODO populate postinfo with info from Post... TODO figure out how to handle eg images??
         System.out.println("sending info");
+        ResultReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
         rec.send(0, postinfo);
     }
 

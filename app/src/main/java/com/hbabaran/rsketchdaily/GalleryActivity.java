@@ -58,7 +58,7 @@ public class GalleryActivity extends AppCompatActivity {
         cacheIntent = new Intent(this, PostCacheService.class);
         //send an intent to PostCacheService requesting the date that this activity was started with
         Bundle bundle = getIntent().getExtras();
-        bundle.putParcelable("receiver", mReceiver);
+        bundle.putParcelable(GALLERY_RECEIVER_TAG, mReceiver);
         cacheIntent.putExtras(bundle);
         startService(cacheIntent);
 
