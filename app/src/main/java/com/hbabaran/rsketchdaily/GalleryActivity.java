@@ -1,14 +1,8 @@
 package com.hbabaran.rsketchdaily;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.media.MediaBrowserServiceCompat;
 import android.support.v4.os.ResultReceiver;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +14,6 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -35,8 +28,12 @@ public class GalleryActivity extends AppCompatActivity {
     private Intent cacheIntent;
     public static final String GALLERY_RECEIVER_TAG = "com.hbabaran.rsketchdaily.gallery_receiver";
     public static final int POST_LOADED = 0;
-    public static final int COMMENT_LOADED = 1;
+    public static final int COMMENT_COUNT = 1;
+    public static final int COMMENT_LOADED = 2;
     public GalleryReceiver mReceiver;
+
+    GridView gridview;
+    GalleryCommentGrid adapter;
 
     public class GalleryReceiver extends ResultReceiver{
         public GalleryReceiver(Handler handler) {
@@ -49,9 +46,16 @@ public class GalleryActivity extends AppCompatActivity {
                 case POST_LOADED:
                     setActionBarText(resultData.getString("title"));
                     //TODO self text
+                    break;
+                case COMMENT_COUNT:
+                    gridViewSetup(resultData.getInt("count")); //TODO use static strings
+                    System.out.println("initializing gridview of length" + resultData.getInt("count"));
+                    break;
                 case COMMENT_LOADED:
-                    //set a comment, something to do with image adapter
+                    sendCommentImageURL(resultData.getInt("position"), resultData.getString("URL")); //TODO positions (sorting?)
+                    break;
                 default:
+                    //throw an error?
             }
 
         }
@@ -64,17 +68,15 @@ public class GalleryActivity extends AppCompatActivity {
 
         mReceiver = new GalleryReceiver(new Handler());
         cacheIntent = new Intent(this, PostCacheService.class);
+
         //send an intent to PostCacheService requesting the date that this activity was started with
         Bundle bundle = getIntent().getExtras();
         bundle.putParcelable(GALLERY_RECEIVER_TAG, mReceiver);
         cacheIntent.putExtras(bundle);
         startService(cacheIntent);
 
-        gridViewSetup();
         actionBarSetup();
-
     }
-
 
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -83,17 +85,17 @@ public class GalleryActivity extends AppCompatActivity {
         return true;
     }
 
-    private void gridViewSetup(){
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setAdapter(new ImageAdapter(this));
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void gridViewSetup(int commentCount){
+        this.gridview = (GridView) findViewById(R.id.gridview);
+        this.adapter = new GalleryCommentGrid(this, commentCount);
+        this.gridview.setAdapter(this.adapter);
+        this.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 Toast.makeText(GalleryActivity.this, "" + position,
                         Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void actionBarSetup() {
@@ -101,12 +103,15 @@ public class GalleryActivity extends AppCompatActivity {
         TimeZone timeZone = TimeZone.getTimeZone("UTC");
         Calendar currtime = Calendar.getInstance(timeZone);
         ab.setTitle(R.string.loading);
-        //new PostLoader(currtime, this).execute();
     }
 
     protected void setActionBarText(String text){
         ActionBar ab = getSupportActionBar();
         ab.setTitle(text);
+    }
+
+    protected void sendCommentImageURL(int position, String url){
+        this.adapter.setCommentImageURL(position, url);
     }
 
 

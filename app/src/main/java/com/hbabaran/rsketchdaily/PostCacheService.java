@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static java.lang.String.valueOf;
 
@@ -28,7 +29,7 @@ import static java.lang.String.valueOf;
  * Created by wren on 17/10/2016.
  */
 
-class PostCacheService extends IntentService {
+public class PostCacheService extends IntentService {
     private static final String TAG = "PostCacheService";
     public static final String SEND_GALLERY_INFO = "com.hbabaran.rsketchdaily.sendgalleryinfo";
     private Intent intent;
@@ -42,27 +43,40 @@ class PostCacheService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         ResultReceiver rec = intent.getExtras().getParcelable(GalleryActivity.GALLERY_RECEIVER_TAG);
-        Bundle postinfo =new Bundle();
+        Bundle postinfo = new Bundle();
 
+        //check if the post requested is the post we have already loaded; if not load it
         Date date = new Date(intent.getExtras().getLong("date"));
-        if(this.post == null ||
-                this.post.getDate().toPrimitive() != date.toPrimitive()){
+        if (this.post == null ||
+                this.post.getDate().toPrimitive() != date.toPrimitive()) {
             this.post = PostLoader.getPostByDate(date);
         }
 
         postinfo.putString("title", post.getTitle()); //TODO self text
-        rec.send(0, postinfo);
+        rec.send(GalleryActivity.POST_LOADED, postinfo);
 
-        if(this.post.getComments().isEmpty()){
-            //load the comments and send each one as loaded 
-        } else {
-            for (Comment comment: this.post.getComments()) {
+        this.post.updateComments();
+
+        if (this.post.getComments() != null) {
+            ArrayList<Comment> comments = this.post.getComments();
+            //send number of comments so gallery activity can populate spinwheels
+            Bundle commentCount = new Bundle();
+            commentCount.putInt("count", comments.size());
+            rec.send(GalleryActivity.COMMENT_COUNT, commentCount);
+            //send comments
+            for (int i = 0; i < comments.size(); i++) {
+                //perform time-intensive comment initializations
+                //TODO consider making a comment serializable... especially if you want to convert back into a comment and pass the comment directly to the GalleryCommentGridImageAdapter
+                //for now a comment is broken down here
                 Bundle commentInfo = new Bundle();
-                commentInfo.putByteArray("image", comment.getImgByteArray()); //TODO send other info
-                rec.send(1, commentInfo);
+                commentInfo.putInt("position", i);
+                if(comments.get(i).getImageURL() != null){
+                    commentInfo.putString("URL", comments.get(i).getImageURL().toString());
+                }
+                rec.send(GalleryActivity.COMMENT_LOADED, commentInfo);
             }
+        } else {
+            System.err.println("Could not load comments!");
         }
     }
-
-
 }
