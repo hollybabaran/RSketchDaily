@@ -33,7 +33,7 @@ public class GalleryActivity extends AppCompatActivity {
     public GalleryReceiver mReceiver;
 
     GridView gridview;
-    GalleryCommentGrid adapter;
+    GalleryImageAdapter adapter;
 
     public class GalleryReceiver extends ResultReceiver{
         public GalleryReceiver(Handler handler) {
@@ -52,7 +52,7 @@ public class GalleryActivity extends AppCompatActivity {
                     System.out.println("initializing gridview of length" + resultData.getInt("count"));
                     break;
                 case COMMENT_LOADED:
-                    sendCommentImageURL(resultData.getInt("position"), resultData.getString("URL")); //TODO positions (sorting?)
+                    sendCommentImage(resultData.getInt("position"), resultData.getByteArray("img")); //TODO positions (sorting?)
                     break;
                 default:
                     //throw an error?
@@ -87,7 +87,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     private void gridViewSetup(int commentCount){
         this.gridview = (GridView) findViewById(R.id.gridview);
-        this.adapter = new GalleryCommentGrid(this, commentCount);
+        this.adapter = new GalleryImageAdapter(this, commentCount);
         this.gridview.setAdapter(this.adapter);
         this.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -110,8 +110,9 @@ public class GalleryActivity extends AppCompatActivity {
         ab.setTitle(text);
     }
 
-    protected void sendCommentImageURL(int position, String url){
-        this.adapter.setCommentImageURL(position, url);
+    protected void sendCommentImage(int position, byte[] img){
+        this.adapter.setCommentImage(position, img);
+        this.adapter.notifyDataSetChanged();
     }
 
 

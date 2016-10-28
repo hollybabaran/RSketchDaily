@@ -56,7 +56,6 @@ public class PostCacheService extends IntentService {
         rec.send(GalleryActivity.POST_LOADED, postinfo);
 
         this.post.updateComments();
-
         if (this.post.getComments() != null) {
             ArrayList<Comment> comments = this.post.getComments();
             //send number of comments so gallery activity can populate spinwheels
@@ -64,15 +63,15 @@ public class PostCacheService extends IntentService {
             commentCount.putInt("count", comments.size());
             rec.send(GalleryActivity.COMMENT_COUNT, commentCount);
             //send comments
+            //TODO consider making a comment serializable... especially if you want to convert back into a comment and pass the comment directly to the GalleryCommentGridImageAdapter
             for (int i = 0; i < comments.size(); i++) {
-                //perform time-intensive comment initializations
-                //TODO consider making a comment serializable... especially if you want to convert back into a comment and pass the comment directly to the GalleryCommentGridImageAdapter
-                //for now a comment is broken down here
                 Bundle commentInfo = new Bundle();
                 commentInfo.putInt("position", i);
-                if(comments.get(i).getImageURL() != null){
-                    commentInfo.putString("URL", comments.get(i).getImageURL().toString());
-                }
+                URL url = comments.get(i).getImageURL();
+                if(url != null) commentInfo.putString("URL", url.toString());
+                byte[] img = comments.get(i).downloadThumbnailImage();
+                if(img != null) commentInfo.putByteArray("img", img);
+
                 rec.send(GalleryActivity.COMMENT_LOADED, commentInfo);
             }
         } else {

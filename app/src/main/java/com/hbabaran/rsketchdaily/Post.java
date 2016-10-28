@@ -86,7 +86,7 @@ class Post {
     private class SortByNew implements Comparator<Comment> {
         @Override
         public int compare(Comment c1, Comment c2) {
-            return c1.getTime().compareTo(c2.getTime()); //TODO is this ascending or descending?
+            return -(c1.getTime().compareTo(c2.getTime()));
         }
     }
 

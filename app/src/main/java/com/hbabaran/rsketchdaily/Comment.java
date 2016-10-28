@@ -52,17 +52,24 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
 
     private URL parseImageURL(){
         URL imageURL = null;
-        try{
-            //algorithm 1: look for the first instance of [X](Y) and pull out image from Y
-            Pattern p = Pattern.compile("^.*?\\[.*?\\]\\s*?\\((.*?)\\).*$");
-            Matcher m = p.matcher(this.bodyText);
-            if(m.matches()) {
-                imageURL = new URL(m.group(1));
+        try {
+            //1 [..X..](/critique) and pull out image from Y
+            Matcher markers = Pattern.compile(("^.*?\\[.*?(http[s]?://.*?)(\\s.*)?\\]\\s*?\\(/(critique|help|nostreak)\\).*\"$")).matcher(this.bodyText);
+            //2 [..](X)
+            Matcher link = Pattern.compile("^.*?\\[.*?\\]\\s*?\\((http[s]?://.*?)\\).*\"$").matcher(this.bodyText);
+            //3 ..X..
+            Matcher url = Pattern.compile("^.*?(http[s]?://.*?)[\\s\\)\\\\\"].*?$").matcher(this.bodyText);
+            if(markers.matches()){
+                imageURL = new URL(markers.group(1));
+            }else if(link.matches()) {
+                imageURL = new URL(link.group(1));
+            } else if (url.matches()){
+                imageURL = new URL(url.group(1));
             } else {
-                throw new Exception("Couldn't find a link in the text, text was \n" + this.bodyText);
+                throw new Exception("Couldn't find a link in the text");
             }
         } catch(Exception e) {
-            System.err.println("Could not parse image URL from comments: " + e);
+            System.err.println("Could not parse image URL from comments: " + e + "\nBodytext was:\n" + this.bodyText);
         }
         return imageURL;
     }
@@ -71,5 +78,17 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
         return commentID;
     }
     Float getTime(){ return time; }
+
+
+    public byte[] downloadThumbnailImage(){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap image = PostLoader.getCommentImage(getImageURL());
+        if(image != null){
+            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }
+        return null;
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.hbabaran.rsketchdaily;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,11 +38,14 @@ import static java.lang.String.valueOf;
  * Created by wren on 10/16/2016.
  */
 
+//static class containing BLOCKING methods that connect to the internet
 public class PostLoader {
 
     public static Post getPostByDate(Date date) {
         return new Post(date, getPostJSONByDate(date));
     }
+
+    private static final String TUMBLR_OAUTH_CONSUMER_KEY = "SSqgosrC2vc9r4t8eI0OiUL3F9Y9yprIbfM4uaJScEa6dDcj9W";
 
     //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
     //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
@@ -148,4 +153,8 @@ public class PostLoader {
         return comments;
     }
 
+    public static Bitmap getCommentImage(URL url){
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        return imageLoader.loadImageSync(url.toString());
+    }
 }
