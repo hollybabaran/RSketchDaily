@@ -12,7 +12,6 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    Intent postCacheService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,10 +20,6 @@ public class MainActivity extends AppCompatActivity {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
-        System.out.println("hello, world");
-
-        //postCacheService = new Intent(this, PostCacheService.class);
-        //startService(postCacheService);
 
         Bundle bundle = new Bundle();
         bundle.putLong("date", Date.getUnixMintime(Calendar.getInstance()));

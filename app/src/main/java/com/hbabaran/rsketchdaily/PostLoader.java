@@ -45,8 +45,6 @@ public class PostLoader {
         return new Post(date, getPostJSONByDate(date));
     }
 
-    private static final String TUMBLR_OAUTH_CONSUMER_KEY = "SSqgosrC2vc9r4t8eI0OiUL3F9Y9yprIbfM4uaJScEa6dDcj9W";
-
     //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
     //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
     private static JSONObject getPostJSONByDate(Date date) {
@@ -117,13 +115,23 @@ public class PostLoader {
         }
     }
 
-    private static JsonArray downloadJson(URL url) throws IOException{
+    public static JsonElement downloadJson(URL url) throws IOException{
         HttpURLConnection request = (HttpURLConnection) url.openConnection();
         request.connect();
         // Convert to a JSON object to print data
         JsonParser jp = new JsonParser(); //from gson
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-        return root.getAsJsonArray(); //May be an array, may be an object.
+        return root; //May be an array, may be an object.
+    }
+
+    public static JsonElement downloadJson(URL url, String propName, String propVal) throws IOException{
+        HttpURLConnection request = (HttpURLConnection) url.openConnection();
+        request.setRequestProperty(propName, propVal);
+        request.connect();
+        // Convert to a JSON object to print data
+        JsonParser jp = new JsonParser(); //from gson
+        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+        return root; //May be an array, may be an object.
     }
 
 
@@ -132,7 +140,7 @@ public class PostLoader {
         ArrayList<Comment> comments = new ArrayList<>();
         Type listType = new TypeToken<List<JsonElement>>() {}.getType();
         try {
-            postJson = downloadJson(new URL(postUrl + ".json"));
+            postJson = downloadJson(new URL(postUrl + ".json")).getAsJsonArray();
             List<JsonElement> commentList = new Gson().fromJson(
                     postJson.get(1).getAsJsonObject()
                             .getAsJsonObject("data")
@@ -140,6 +148,8 @@ public class PostLoader {
             for(JsonElement element : commentList){
                 comments.add(new Comment(element.getAsJsonObject()));
             }
+            //TODO we're truncating comments at 30 for now
+            comments.subList(30,comments.size()).clear();
         } catch (MalformedURLException e){
             System.err.println(e);
             return null;
@@ -153,8 +163,4 @@ public class PostLoader {
         return comments;
     }
 
-    public static Bitmap getCommentImage(URL url){
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        return imageLoader.loadImageSync(url.toString());
-    }
 }

@@ -3,15 +3,9 @@ package com.hbabaran.rsketchdaily;
 import android.graphics.Bitmap;
 
 import com.google.gson.JsonObject;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,31 +20,62 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
     private String bodyText;
 
     private URL imageURL;
+    private Boolean parsedURL;
+
+    public enum LinkType{
+        Direct,
+        Tumblr,
+        Insta,
+        ImgurAlbum,
+        DeviantArt,
+        Other
+    }
+    private LinkType linkType;
 
     //constructor does NOT download the image or anything else
     public Comment(JsonObject comment){
         this.commentID = "";
         this.time = 0;
         this.imageURL = null;
+        this.parsedURL = false;
         this.bodyText = "";
+        this.linkType = null;
         if (comment != null) {
             JsonObject data = comment.getAsJsonObject("data");
             this.commentID = data.get("id").toString();
             this.time = Float.parseFloat(data.get("created").toString());
             this.bodyText = data.get("body").toString();
-            this.imageURL = parseImageURL(); //TODO parse comment text for image url
         }
     }
 
-
+    //blocking-- may query tumblr/insta/other sites for the bare image url
     public URL getImageURL(){
-        if(this.imageURL == null){
-            this.imageURL = parseImageURL();
+        if(!this.parsedURL){
+            this.parsedURL = true;
+            this.imageURL = parseCommentURL();
+            if(this.imageURL != null) {
+                Matcher directImageLink = Pattern.compile(".*?\\.(jpg|jpeg|png|bmp|gif)$").matcher(this.imageURL.toString());
+                if (!directImageLink.matches()) {
+                    try {
+                        if (this.imageURL.toString().contains("tumblr")) {
+                            this.linkType = LinkType.Tumblr;
+                            this.imageURL = CommentLoader.queryTumblrURL(this.imageURL);
+                        } else if (this.imageURL.toString().contains("imgur")){
+                            this.linkType = LinkType.ImgurAlbum;
+                            this.imageURL = CommentLoader.queryImgurURL(this.imageURL);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Could not refine comment link to image URL: " + this.imageURL + "\n" + e);
+                    }
+                } else {
+                    this.linkType = LinkType.Direct;
+                }
+            }
         }
         return this.imageURL;
     }
 
-    private URL parseImageURL(){
+    private URL parseCommentURL(){
         URL imageURL = null;
         try {
             //1 [..X..](/critique) and pull out image from Y
@@ -66,10 +91,10 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
             } else if (url.matches()){
                 imageURL = new URL(url.group(1));
             } else {
-                throw new Exception("Couldn't find a link in the text");
+                throw new Exception("Couldn't find a link in the reddit comment text");
             }
         } catch(Exception e) {
-            System.err.println("Could not parse image URL from comments: " + e + "\nBodytext was:\n" + this.bodyText);
+            System.err.println("Could not parse URL from comments: " + e + "\nBodytext was:\n" + this.bodyText);
         }
         return imageURL;
     }
@@ -82,7 +107,8 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
 
     public byte[] downloadThumbnailImage(){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Bitmap image = PostLoader.getCommentImage(getImageURL());
+        Bitmap image = null;
+        image = CommentLoader.getCommentImage(getImageURL());
         if(image != null){
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
             return stream.toByteArray();

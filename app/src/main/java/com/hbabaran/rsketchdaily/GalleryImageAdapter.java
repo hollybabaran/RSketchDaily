@@ -28,15 +28,13 @@ public class GalleryImageAdapter extends BaseAdapter {
     private static final int DEFAULT_IMAGE_LOADING = R.drawable.spinner_white_48; //TODO get a non-chihuahua default loading image
     private Bitmap IMAGE_ERROR;
     private Bitmap IMAGE_LOADING;
-    private byte[][] images;
+    private Bitmap[] images;
 
     public GalleryImageAdapter(Context context, int commentCount) {
         mContext = context;
         this.commentCount = commentCount;
-        images = new byte[this.commentCount][];
-        for(int i = 0; i < this.commentCount; i++){
-            images[i] = null;
-        }
+        images = new Bitmap[this.commentCount];
+
         IMAGE_ERROR = BitmapFactory.decodeResource(mContext.getResources(), DEFAULT_IMAGE_ERROR);
         IMAGE_LOADING = BitmapFactory.decodeResource(mContext.getResources(), DEFAULT_IMAGE_LOADING);
     }
@@ -50,9 +48,9 @@ public class GalleryImageAdapter extends BaseAdapter {
             images[position] = DEFAULT_IMAGE_ERROR;
         }*/
         if(img != null){
-            images[position] = img;
+            images[position] = BitmapFactory.decodeByteArray(img, 0, img.length);
         } else {
-            images[position] = new byte[0];
+            images[position] = IMAGE_ERROR;
         }
     }
 
@@ -83,14 +81,9 @@ public class GalleryImageAdapter extends BaseAdapter {
         }
         imageView.setBackgroundResource(R.drawable.ab_stacked_solid_inverse_holo);
         if(images[position] != null) {
-            if(images[position].length > 0) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(images[position], 0, images[position].length);
-                imageView.setImageBitmap(bmp);
-            } else {
-                imageView.setImageResource(DEFAULT_IMAGE_ERROR);
-            }
+            imageView.setImageBitmap(images[position]);
         } else {
-            imageView.setImageResource(DEFAULT_IMAGE_LOADING);
+            imageView.setImageBitmap(IMAGE_LOADING);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imageView.setElevation(10);
