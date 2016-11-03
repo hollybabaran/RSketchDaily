@@ -66,12 +66,12 @@ public class GalleryActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.galleryactivity);
+        setContentView(R.layout.activity_gallery);
 
         mReceiver = new GalleryReceiver(new Handler());
-        cacheIntent = new Intent(this, PostCacheService.class);
+        cacheIntent = new Intent(this, GalleryService.class);
 
-        //send an intent to PostCacheService requesting the date that this activity was started with
+        //send an intent to GalleryService requesting the date that this activity was started with
         Bundle bundle = getIntent().getExtras();
         bundle.putParcelable(GALLERY_RECEIVER_TAG, mReceiver);
         cacheIntent.putExtras(bundle);

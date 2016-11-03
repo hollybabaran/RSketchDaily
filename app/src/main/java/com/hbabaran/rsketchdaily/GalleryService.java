@@ -29,14 +29,14 @@ import static java.lang.String.valueOf;
  * Created by wren on 17/10/2016.
  */
 
-public class PostCacheService extends IntentService {
-    private static final String TAG = "PostCacheService";
+public class GalleryService extends IntentService {
+    private static final String TAG = "GalleryService";
     public static final String SEND_GALLERY_INFO = "com.hbabaran.rsketchdaily.sendgalleryinfo";
     private Intent intent;
     Post post; //TODO make this multiple posts.
 
-    public PostCacheService(){
-        super("PostCacheService");
+    public GalleryService(){
+        super("GalleryService");
         this.post = null;
     }
 

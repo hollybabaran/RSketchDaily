@@ -32,6 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDestroy(){
         super.onDestroy();
-        //stopService(postCacheService); //TODO I think this means PostCacheService won't persist but I can't test this right now, so figure this out / make it persist later
+        //stopService(postCacheService); //TODO I think this means GalleryService won't persist but I can't test this right now, so figure this out / make it persist later
     }
 }

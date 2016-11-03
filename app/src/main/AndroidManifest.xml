@@ -26,7 +26,7 @@
         <activity android:name=".GalleryActivity" />
 
         <service
-            android:name=".PostCacheService"
+            android:name=".GalleryService"
             android:exported="false" />
 
         <activity android:name=".SubmissionActivity"></activity>
