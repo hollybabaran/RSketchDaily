@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hbabaran.rsketchdaily">
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +24,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".GalleryActivity" />
-        <service android:name=".PostCacheService" android:exported="false" />
+
+        <service
+            android:name=".PostCacheService"
+            android:exported="false" />
+
+        <activity android:name=".SubmissionActivity"></activity>
     </application>
 
 </manifest>

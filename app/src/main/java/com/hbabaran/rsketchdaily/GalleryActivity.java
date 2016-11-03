@@ -3,6 +3,7 @@ package com.hbabaran.rsketchdaily;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.os.ResultReceiver;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     GridView gridview;
     GalleryImageAdapter adapter;
+    FloatingActionButton submission_fab;
 
     public class GalleryReceiver extends ResultReceiver{
         public GalleryReceiver(Handler handler) {
@@ -76,6 +78,7 @@ public class GalleryActivity extends AppCompatActivity {
         startService(cacheIntent);
 
         actionBarSetup();
+        submissionButtonSetup(bundle.getLong("date"));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,6 +99,22 @@ public class GalleryActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private class submissionListener implements View.OnClickListener{
+        private Intent submissionIntent;
+        public submissionListener(Intent submissionIntent){ this.submissionIntent = submissionIntent;}
+        public void onClick(View v) {
+            startActivity(this.submissionIntent);
+        }
+    }
+    private void submissionButtonSetup(long post_date){
+        Bundle bundle = new Bundle();
+        bundle.putLong("date", post_date);
+        Intent submissionIntent = new Intent(this, SubmissionActivity.class);
+        submissionIntent.putExtras(bundle);
+        this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
+        this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
     }
 
     private void actionBarSetup() {
