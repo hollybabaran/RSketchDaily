@@ -33,6 +33,10 @@ public class GalleryActivity extends AppCompatActivity {
     public static final int COMMENT_LOADED = 2;
     public GalleryReceiver mReceiver;
 
+    private boolean post_info_loaded;
+    private String post_title;
+    private String post_URL;
+
     GridView gridview;
     GalleryImageAdapter adapter;
     FloatingActionButton submission_fab;
@@ -46,15 +50,15 @@ public class GalleryActivity extends AppCompatActivity {
         public void onReceiveResult(int resultCode, Bundle resultData)  {
             switch(resultCode){
                 case POST_LOADED:
-                    setActionBarText(resultData.getString("title"));
+                    setPostInfo(resultData.getString("title"), resultData.getString("url"));
                     //TODO self text
                     break;
                 case COMMENT_COUNT:
-                    gridViewSetup(resultData.getInt("count")); //TODO use static strings
+                    setupGridView(resultData.getInt("count")); //TODO use static strings for bundle keys
                     System.out.println("initializing gridview of length" + resultData.getInt("count"));
                     break;
                 case COMMENT_LOADED:
-                    sendCommentImage(resultData.getInt("position"), resultData.getByteArray("img")); //TODO positions (sorting?)
+                    sendCommentImage(resultData.getInt("position"), resultData.getByteArray("img"));
                     break;
                 default:
                     //throw an error?
@@ -67,7 +71,7 @@ public class GalleryActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-
+        this.post_info_loaded =  false;
         mReceiver = new GalleryReceiver(new Handler());
         cacheIntent = new Intent(this, GalleryService.class);
 
@@ -77,8 +81,8 @@ public class GalleryActivity extends AppCompatActivity {
         cacheIntent.putExtras(bundle);
         startService(cacheIntent);
 
-        actionBarSetup();
-        submissionButtonSetup(bundle.getLong("date"));
+        setupActionBar();
+        setupSubmissionButton(bundle.getLong("date"));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,7 +92,7 @@ public class GalleryActivity extends AppCompatActivity {
         return true;
     }
 
-    private void gridViewSetup(int commentCount){
+    private void setupGridView(int commentCount){
         this.gridview = (GridView) findViewById(R.id.gridview);
         this.adapter = new GalleryImageAdapter(this, commentCount);
         this.gridview.setAdapter(this.adapter);
@@ -108,7 +112,7 @@ public class GalleryActivity extends AppCompatActivity {
             startActivity(this.submissionIntent);
         }
     }
-    private void submissionButtonSetup(long post_date){
+    private void setupSubmissionButton(long post_date){
         Bundle bundle = new Bundle();
         bundle.putLong("date", post_date);
         Intent submissionIntent = new Intent(this, SubmissionActivity.class);
@@ -116,15 +120,22 @@ public class GalleryActivity extends AppCompatActivity {
         this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
         this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
     }
+    private void updateSubmissionButton(String title, String url){
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        bundle.putString("url", url);
+        Intent submissionIntent = new Intent(this, SubmissionActivity.class);
+        submissionIntent.putExtras(bundle);
+        this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
+        this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
+    }
 
-    private void actionBarSetup() {
+    private void setupActionBar() {
         ActionBar ab = getSupportActionBar();
-        TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        Calendar currtime = Calendar.getInstance(timeZone);
         ab.setTitle(R.string.loading);
     }
 
-    protected void setActionBarText(String text){
+    protected void updateActionBar(String text){
         ActionBar ab = getSupportActionBar();
         ab.setTitle(text);
     }
@@ -134,6 +145,13 @@ public class GalleryActivity extends AppCompatActivity {
         this.adapter.notifyDataSetChanged();
     }
 
+    protected void setPostInfo(String title, String url){
+        this.post_info_loaded = true;
+        this.post_title = title;
+        this.post_URL = url;
+        updateActionBar(this.post_title);
+        updateSubmissionButton(title, url);
+    }
 
 
 }

@@ -21,6 +21,9 @@ public class SubmissionService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        //possible things that could be sent to this service...
+        // 1 -- request the name of the post
+        // 2 -- load an image from the media device for displaying
+        // 3 -- make a submission (you will need to send periodic status updates-- those pop up as toasts )
     }
 }

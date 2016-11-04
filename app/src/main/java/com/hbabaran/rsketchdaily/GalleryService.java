@@ -52,7 +52,8 @@ public class GalleryService extends IntentService {
             this.post = PostLoader.getPostByDate(date);
         }
 
-        postinfo.putString("title", post.getTitle()); //TODO self text
+        postinfo.putString("title", post.getTitle());
+        postinfo.putString("url", post.getPostURL().toString()); //TODO self text
         rec.send(GalleryActivity.POST_LOADED, postinfo);
 
         this.post.updateComments();
