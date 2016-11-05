@@ -33,9 +33,6 @@ public class GalleryActivity extends AppCompatActivity {
     public static final int COMMENT_LOADED = 2;
     public GalleryReceiver mReceiver;
 
-    private boolean post_info_loaded;
-    private String post_title;
-    private String post_URL;
 
     GridView gridview;
     GalleryImageAdapter adapter;
@@ -50,7 +47,9 @@ public class GalleryActivity extends AppCompatActivity {
         public void onReceiveResult(int resultCode, Bundle resultData)  {
             switch(resultCode){
                 case POST_LOADED:
-                    setPostInfo(resultData.getString("title"), resultData.getString("url"));
+                    setPostInfo(resultData.getString("title"),
+                                resultData.getString("url"),
+                                resultData.getLong("date"));
                     //TODO self text
                     break;
                 case COMMENT_COUNT:
@@ -71,7 +70,6 @@ public class GalleryActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        this.post_info_loaded =  false;
         mReceiver = new GalleryReceiver(new Handler());
         cacheIntent = new Intent(this, GalleryService.class);
 
@@ -115,17 +113,19 @@ public class GalleryActivity extends AppCompatActivity {
     private void setupSubmissionButton(long post_date){
         Bundle bundle = new Bundle();
         bundle.putLong("date", post_date);
-        Intent submissionIntent = new Intent(this, SubmissionActivity.class);
-        submissionIntent.putExtras(bundle);
-        this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
-        this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
+        setSubmissionButtonIntent(bundle);
     }
-    private void updateSubmissionButton(String title, String url){
+    private void updateSubmissionButton(String title, String url, long post_date){
         Bundle bundle = new Bundle();
+        bundle.putLong("date", post_date);
         bundle.putString("title", title);
         bundle.putString("url", url);
+        setSubmissionButtonIntent(bundle);
+    }
+
+    private void setSubmissionButtonIntent(Bundle extras){
         Intent submissionIntent = new Intent(this, SubmissionActivity.class);
-        submissionIntent.putExtras(bundle);
+        submissionIntent.putExtras(extras);
         this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
         this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
     }
@@ -145,12 +145,9 @@ public class GalleryActivity extends AppCompatActivity {
         this.adapter.notifyDataSetChanged();
     }
 
-    protected void setPostInfo(String title, String url){
-        this.post_info_loaded = true;
-        this.post_title = title;
-        this.post_URL = url;
-        updateActionBar(this.post_title);
-        updateSubmissionButton(title, url);
+    protected void setPostInfo(String title, String url, long date){
+        updateActionBar(title);
+        updateSubmissionButton(title, url, date);
     }
 
 
