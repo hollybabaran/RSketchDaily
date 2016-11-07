@@ -3,6 +3,7 @@ package com.hbabaran.rsketchdaily;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
@@ -14,11 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 
 import static android.R.attr.path;
+import static android.R.attr.thumb;
 
 public class SubmissionActivity extends AppCompatActivity {
 
@@ -34,7 +38,9 @@ public class SubmissionActivity extends AppCompatActivity {
     private String postURL;
     private long postDate;
     private File photoFile;
-    private String photoFilePath;
+    private Uri photoURI;
+
+    private Bitmap thumbnail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +97,7 @@ public class SubmissionActivity extends AppCompatActivity {
                 storageDir     /* directory */
         );
         // Save a file: path for use with ACTION_VIEW intents
-        this.photoFilePath = "file:" + photoFile.getAbsolutePath();
+        //this.photoFilePath = "file:" + photoFile.getAbsolutePath();
     }
 
     private void requestCameraPermissions(){
@@ -117,10 +123,10 @@ public class SubmissionActivity extends AppCompatActivity {
             System.err.println("could not make photo file: " + e);
         }
         if(this.photoFile != null) {
-            Uri photoURI =  FileProvider.getUriForFile(this,
+            this.photoURI =  FileProvider.getUriForFile(this,
                     "com.hbabaran.rsketchdaily.fileprovider",
                     this.photoFile);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.photoURI);
             this.cameraButton = (ImageButton) findViewById(R.id.camera_button);
             this.cameraButton.setOnClickListener(
                     new IntentResultListener(cameraIntent, PHOTO_FROM_CAMERA));
@@ -136,17 +142,31 @@ public class SubmissionActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode){
-            case PHOTO_FROM_GALLERY:
-                System.out.println("got an image from the gallery");
-                //todo pressing "back" triggers this as well so make sure you got an image
-                break;
-            case PHOTO_FROM_CAMERA:
-                System.out.println("got an image from the camera");
-                break;
-            default:
-                System.err.println("ERROR: photo picker, activity result not recognized");
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PHOTO_FROM_GALLERY:
+                    System.out.println("got an image from the gallery");
+                    Uri selectedImageUri = data.getData();
+                    ImageView display = (ImageView) findViewById(R.id.pic_selection_display);
+                    display.setImageDrawable(null);
+                    display.setImageURI(selectedImageUri);
+                    break;
+                case PHOTO_FROM_CAMERA:
+                    //TODO loading image from URI is blocking, push to service
+                    updateThumbnail();
+                    //TODO register camera image to gallery/media
+                    //TODO scale down the thumbnail
+                    break;
+                default:
+                    System.err.println("ERROR: photo picker, activity result not recognized");
+            }
         }
+    }
+
+    private void updateThumbnail(){
+        ImageView display = (ImageView) findViewById(R.id.pic_selection_display);
+        display.setImageDrawable(null);
+        display.setImageURI(this.photoURI);
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -155,6 +175,7 @@ public class SubmissionActivity extends AppCompatActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupCameraButton();
             }else {
+                Toast.makeText(this, "Camera use disabled", Toast.LENGTH_SHORT).show();
                 disableCameraButton();
             }
         }
