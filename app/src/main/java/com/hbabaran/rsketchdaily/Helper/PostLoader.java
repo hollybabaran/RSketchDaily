@@ -1,20 +1,14 @@
-package com.hbabaran.rsketchdaily;
-
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBar;
-import android.os.Bundle;
+package com.hbabaran.rsketchdaily.Helper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.hbabaran.rsketchdaily.Model.Comment;
+import com.hbabaran.rsketchdaily.Model.Date;
+import com.hbabaran.rsketchdaily.Model.Post;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,10 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import static java.lang.String.valueOf;
 

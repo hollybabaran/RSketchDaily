@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Model;
 
 import java.io.Serializable;
 import java.util.Calendar;

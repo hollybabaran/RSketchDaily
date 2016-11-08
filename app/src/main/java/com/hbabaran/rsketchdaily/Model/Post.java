@@ -1,4 +1,6 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Model;
+
+import com.hbabaran.rsketchdaily.Helper.PostLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,7 +8,6 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -14,8 +15,8 @@ import java.util.Comparator;
  * Created by wren on 17/10/2016.
  */
 
-class Post {
-    public static enum SortMethod{
+public class Post {
+    public enum SortMethod{
         NEW,
         RANDOM,
         TOP

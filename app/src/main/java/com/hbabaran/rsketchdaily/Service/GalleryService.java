@@ -1,25 +1,16 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Service;
 
 import android.app.IntentService;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.os.ResultReceiver;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.hbabaran.rsketchdaily.Activity.GalleryActivity;
+import com.hbabaran.rsketchdaily.Model.Comment;
+import com.hbabaran.rsketchdaily.Model.Date;
+import com.hbabaran.rsketchdaily.Helper.PostLoader;
+import com.hbabaran.rsketchdaily.Model.Post;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 

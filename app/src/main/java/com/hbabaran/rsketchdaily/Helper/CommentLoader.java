@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Helper;
 
 import android.graphics.Bitmap;
 
@@ -6,14 +6,10 @@ import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.PhotoPost;
-import com.tumblr.jumblr.types.Post;
-import com.tumblr.jumblr.types.Photo;
-import com.tumblr.jumblr.types.User;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +14,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import java.util.Calendar;
-import java.util.TimeZone;
+import com.hbabaran.rsketchdaily.Activity.View.GalleryImageAdapter;
+import com.hbabaran.rsketchdaily.Service.GalleryService;
+import com.hbabaran.rsketchdaily.R;
 
 /**
  * Created by wren on 10/14/2016.

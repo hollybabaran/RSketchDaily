@@ -1,8 +1,9 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Model;
 
 import android.graphics.Bitmap;
 
 import com.google.gson.JsonObject;
+import com.hbabaran.rsketchdaily.Helper.CommentLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;

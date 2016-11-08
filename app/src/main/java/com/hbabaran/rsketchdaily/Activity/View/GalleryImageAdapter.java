@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily;
+package com.hbabaran.rsketchdaily.Activity.View;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.hbabaran.rsketchdaily.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
