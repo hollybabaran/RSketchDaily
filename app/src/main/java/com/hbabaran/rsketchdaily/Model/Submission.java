@@ -1,0 +1,69 @@
+package com.hbabaran.rsketchdaily.Model;
+
+import android.net.Uri;
+
+import com.hbabaran.rsketchdaily.Activity.SubmissionActivity;
+
+import java.net.URL;
+
+/**
+ * Created by wren on 08/11/2016.
+ */
+
+public class Submission {
+    private String postURL;
+    private Uri image;
+    private String submissionText;
+
+    private String imgurURL;
+    private String commentURL;
+
+    public Submission(){
+        this.postURL = null;
+        this.image = null;
+        this.submissionText = null;
+        this.imgurURL = null;
+        this.commentURL = null;
+    }
+
+    public void setImage(Uri image){
+        this.image = image;
+    }
+    public void setText(String submissionText){
+        this.submissionText = submissionText;
+    }
+    public void setPost(String post){
+        this.postURL = post;
+    }
+    public void setImgurURL(String url){ this.imgurURL = url; }
+    public void setCommentURL(String url){ this.commentURL = url; }
+
+    public Uri getImage(){ return this.image; }
+    public String getSubmissionText(){ return this.submissionText; }
+    public String getPostURL(){ return this.postURL; }
+    public String getImgurURL(){ return this.imgurURL; }
+    public String getCommentURL(){ return this.imgurURL; }
+
+    public boolean hasComment(){
+        return (this.submissionText != null && !this.submissionText.equals(""));
+    }
+    public boolean hasImage(){
+        return (this.image != null);
+    }
+    public boolean hasPost(){
+        return (this.postURL != null);
+    }
+    public boolean hasImgurURL() { return (this.imgurURL != null); }
+    public boolean hasCommentURL() { return (this.commentURL != null); }
+
+    public int isValidSubmission(){
+        if(!hasPost()) return SubmissionActivity.MESSAGE_MISSING_POST;
+        if(!hasImage()) return SubmissionActivity.MESSAGE_MISSING_IMAGE;
+        if(!hasComment()) return SubmissionActivity.MESSAGE_MISSING_COMMENT;
+        return SubmissionActivity.SUBMISSION_VALID;
+    }
+
+    public Boolean submissionSuccessful(){
+        return (this.imgurURL != null && this.commentURL != null);
+    }
+}

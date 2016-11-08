@@ -94,7 +94,7 @@
                 android:inputType="textPersonName"
                 android:text="I like how this one turned out!"
                 android:ems="10"
-                android:id="@+id/editText2"
+                android:id="@+id/comment_box"
                 android:gravity="top"
                 android:layout_marginLeft="5dp"/>
         </FrameLayout>
@@ -103,7 +103,7 @@
             android:text="Post my sketch!"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button"
+            android:id="@+id/submission_button"
             android:layout_weight="0.04" />
 
     </LinearLayout>
