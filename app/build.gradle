@@ -30,4 +30,5 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.tumblr:jumblr:0.0.11'
     compile 'com.android.support:design:24.2.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
 }

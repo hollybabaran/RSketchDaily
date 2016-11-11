@@ -1,9 +1,17 @@
 package com.hbabaran.rsketchdaily.Model;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.hbabaran.rsketchdaily.Activity.SubmissionActivity;
+import com.hbabaran.rsketchdaily.Helper.SubmissionUpLoader;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 
 /**
@@ -11,14 +19,17 @@ import java.net.URL;
  */
 
 public class Submission {
+
+    private Context context;
+
     private String postURL;
     private Uri image;
     private String submissionText;
-
     private String imgurURL;
     private String commentURL;
 
-    public Submission(){
+    public Submission(Context context){
+        this.context = context;
         this.postURL = null;
         this.image = null;
         this.submissionText = null;
@@ -65,5 +76,25 @@ public class Submission {
 
     public Boolean submissionSuccessful(){
         return (this.imgurURL != null && this.commentURL != null);
+    }
+
+    public Boolean saveImage(){
+        if(!hasImage()) return false;
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(this.image);
+        context.sendBroadcast(mediaScanIntent);
+        return true;
+    }
+
+    public Boolean uploadToImgur(){
+        System.out.println("uploading uri " + this.image.toString());
+        if(!hasImage()) return false;
+        System.out.println(SubmissionUpLoader.uploadToImgur(this.image));
+        return false;
+    }
+
+    public Boolean postComment(){
+        System.out.println("here we fake uploading to reddit...");
+        return false;
     }
 }

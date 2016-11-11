@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hbabaran.rsketchdaily.Helper.PostLoader;
-import com.hbabaran.rsketchdaily.Helper.SubmissionHelper;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.hbabaran.rsketchdaily.Model.Post;
 import com.hbabaran.rsketchdaily.Model.Submission;
@@ -34,6 +33,7 @@ import java.util.List;
 
 public class SubmissionActivity extends AppCompatActivity {
 
+    //public static final String MEDIA_DIR = "Android/data/RSketchDaily";
     public static final int PHOTO_FROM_GALLERY = 1;
     public static final int PHOTO_FROM_CAMERA = 2;
     public static final int REQUEST_CAMERA_PERMISSION = 3;
@@ -55,12 +55,10 @@ public class SubmissionActivity extends AppCompatActivity {
 
     private String postTitle;
     private long postDate;
-
     private File cameraFile;
     private Uri cameraURI;
 
     private Submission submission;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,22 +67,19 @@ public class SubmissionActivity extends AppCompatActivity {
 
         this.commentBox = (EditText)findViewById(R.id.comment_box);
 
-        this.submission = new Submission();
-        this.postTitle = null;
+        this.submission = new Submission(getApplicationContext());
 
         Bundle bundle = getIntent().getExtras();
         this.postDate = new Date(bundle.getLong("date")).toPrimitive();
-        this.postTitle = bundle.getString("title");
         this.submission.setPost(bundle.getString("url"));
-        //async download post title if necessary
+        this.postTitle = bundle.getString("title");
         if (this.postTitle == null) {
             new downloadPostInfo().execute(this.postDate);
         }
+
+        setupGalleryPhotoChooserButton();
         setupActionBar();
         updateSubmissionButton();
-
-        //set up the buttons, comment text, submit-my-post button
-        setupGalleryPhotoChooserButton();
         if (this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             requestCameraPermissions();
         } else {
@@ -132,6 +127,9 @@ public class SubmissionActivity extends AppCompatActivity {
     }
 
     private void setupCameraFile() throws IOException {
+        //TODO Request permission to write to shared directory??
+        //TODO if this is making a temp file, how to save it into a permanent file??
+        //File storageDir = getExternalStoragePublicDirectory((Environment.DIRECTORY_PICTURES));
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         System.out.println(storageDir.toString());
         this.cameraFile = File.createTempFile(
@@ -211,9 +209,13 @@ public class SubmissionActivity extends AppCompatActivity {
     private class submit extends AsyncTask<Submission, Integer, Submission> {
         protected Submission doInBackground(Submission... submission) {
             publishProgress(SubmissionActivity.PROGRESS_SAVING_IMAGE);
-            //save the photo
-            //upload to imgur
-            //post to reddit
+            if(submission[0].saveImage()) {
+                publishProgress(SubmissionActivity.PROGRESS_UPLOADING_IMAGE);
+                if (submission[0].uploadToImgur()) {
+                    publishProgress(SubmissionActivity.PROGRESS_POSTING_COMMENT);
+                    submission[0].postComment();
+                }
+            }
             return submission[0];
         }
 

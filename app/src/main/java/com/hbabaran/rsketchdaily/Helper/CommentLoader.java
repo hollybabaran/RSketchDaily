@@ -13,16 +13,15 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
+import static com.hbabaran.rsketchdaily.Helper.AuthConstants.TUMBLR_OAUTH_CONSUMER_KEY;
+import static com.hbabaran.rsketchdaily.Helper.AuthConstants.TUMBLR_SECRET_KEY;
+
 /**
  * Created by wren on 28/10/2016.
  */
 
 public class CommentLoader {
-    private static final String TUMBLR_OAUTH_CONSUMER_KEY = "SSqgosrC2vc9r4t8eI0OiUL3F9Y9yprIbfM4uaJScEa6dDcj9W";
-    private static final String TUMBLR_SECRET_KEY = "LpYor0qHW3QbPhkhj0pyV0qYok4NLtPnMlTRmmWc61NaMVGkqy";
-
-    private static final String IMGUR_CLIENT_ID = "a57ce2bd641bfa7";
-    private static final String IMGUR_CLIENT_SECRET = "452fbe1a9c00bb4dcd28862f86c55616f3ecfa2b";
 
     public static Bitmap getCommentImage(URL url){
         if(url != null) {
