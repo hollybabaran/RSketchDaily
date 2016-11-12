@@ -1,6 +1,7 @@
 package com.hbabaran.rsketchdaily.Activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -60,11 +61,13 @@ public class SubmissionActivity extends AppCompatActivity {
 
     private Submission submission;
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission);
-
+        this.mContext = this.getApplicationContext();
         this.commentBox = (EditText)findViewById(R.id.comment_box);
 
         this.submission = new Submission(getApplicationContext());
@@ -211,7 +214,7 @@ public class SubmissionActivity extends AppCompatActivity {
             publishProgress(SubmissionActivity.PROGRESS_SAVING_IMAGE);
             if(submission[0].saveImage()) {
                 publishProgress(SubmissionActivity.PROGRESS_UPLOADING_IMAGE);
-                if (submission[0].uploadToImgur()) {
+                if (submission[0].uploadToImgur(mContext)) {
                     publishProgress(SubmissionActivity.PROGRESS_POSTING_COMMENT);
                     submission[0].postComment();
                 }

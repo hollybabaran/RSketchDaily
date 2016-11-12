@@ -1,8 +1,10 @@
 package com.hbabaran.rsketchdaily.Helper;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.Base64;
 
@@ -35,15 +37,15 @@ import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
 
 public class SubmissionUpLoader {
 
-    public static String uploadToImgur(Uri image){
+    public static String uploadToImgur(Uri image, Context context){
         try {
             System.out.println("attempting to upload to imgur");
             URL url;
             url = new URL("https://api.imgur.com/3/image");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            String data = getFileData(image);
-
+            String data = getFileData(image, context);
+            if(data == null) return null;
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setRequestMethod("POST");
@@ -67,7 +69,7 @@ public class SubmissionUpLoader {
             }
             wr.close();
             rd.close();
-            return stb.toString();
+            return parseResponseForLink(stb.toString());
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -75,80 +77,55 @@ public class SubmissionUpLoader {
     }
 
 
-    private static String getFileData(Uri uri){
-        File file = new File(uri.getPath());
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath(),bmOptions);
-
+    private static String getFileData(Uri uri, Context context){
+        Bitmap image;
+        try {
+            image = decodeFile(uri, context);
+        } catch (IOException e){
+            System.err.println("Couldn't open image file: " + e);
+            return null;
+        }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
-
-
-        String dataImage = Base64.encodeToString(byteArray, Base64.DEFAULT); // .encode(byteArray);
-        String data = null;
+        String dataImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        String data;
         try {
             data = URLEncoder.encode("image", "UTF-8") + "="
                     + URLEncoder.encode(dataImage, "UTF-8");
         } catch (UnsupportedEncodingException e){
             System.err.println("Could not encode image for upload: " + e);
+            return null;
         }
         return data;
     }
-
-    /*
-    private static void writePostStream(Uri image, OutputStream out){
-        System.out.println("Writing the post stream...");
-        Map<String, File> post = new HashMap<>();
-        post.put("image", new File(image.getPath()));
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput oo;
-        byte[] mapInBytes;
-        try {
-            oo = new ObjectOutputStream(bos);
-            oo.writeObject(post);
-            oo.flush();
-            mapInBytes = bos.toByteArray();
-            out.write(mapInBytes);
-        } catch(IOException e){
-            System.err.println("Error encountered generating the byte stream for upload: " + e);
+    private static final int IMAGE_MAX_SIZE = 600;
+    private static Bitmap decodeFile(Uri uri, Context context) throws IOException{
+        Bitmap b;
+        //Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        InputStream fis = context.getContentResolver().openInputStream(uri);
+        BitmapFactory.decodeStream(fis, null, o);
+        fis.close();
+        int scale = 1;
+        if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
+            scale = (int)Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE /
+                    (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
         }
-        System.out.println("finished writing the post stream");
+        //Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        fis = context.getContentResolver().openInputStream(uri);
+        b = BitmapFactory.decodeStream(fis, null, o2);
+        fis.close();
+        return b;
+    }
+    private static String parseResponseForLink(String response){
+
+        return null;
     }
 
-    private static String parseResponseURL(InputStream in){
-        System.out.println("got a response, gonna try and print it");
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(new InputStreamReader(in));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        System.out.println(sb.toString());
-
-
-        String imageURL = null;
-        return imageURL;
-    }
-    */
 }
 
 

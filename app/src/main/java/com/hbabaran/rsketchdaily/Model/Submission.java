@@ -86,10 +86,10 @@ public class Submission {
         return true;
     }
 
-    public Boolean uploadToImgur(){
+    public Boolean uploadToImgur(Context context){
         System.out.println("uploading uri " + this.image.toString());
         if(!hasImage()) return false;
-        System.out.println(SubmissionUpLoader.uploadToImgur(this.image));
+        System.out.println(SubmissionUpLoader.uploadToImgur(this.image, context));
         return false;
     }
 
