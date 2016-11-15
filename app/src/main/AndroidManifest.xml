@@ -25,7 +25,12 @@
 
         <activity android:name=".Activity.GalleryActivity" />
         <service android:name=".Service.GalleryService" android:exported="false" />
-        <activity android:name=".Activity.SubmissionActivity"></activity>
+        <activity android:name=".Activity.SubmissionActivity" android:launchMode="singleTop">
+            <intent-filter>
+                <data android:scheme="com.hbabaran.rsketchdaily" />
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

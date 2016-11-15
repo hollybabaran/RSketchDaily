@@ -19,6 +19,11 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -31,4 +36,5 @@ dependencies {
     compile 'com.tumblr:jumblr:0.0.11'
     compile 'com.android.support:design:24.2.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile "net.dean.jraw:JRAW:0.9.0"
 }

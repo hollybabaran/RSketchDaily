@@ -32,6 +32,14 @@ import static java.lang.String.valueOf;
 //static class containing BLOCKING methods that connect to the internet
 public class PostLoader {
 
+
+    private static String REDDIT_URL = "https://www.reddit.com/r/";
+    private static String SUBREDDIT_NAME = "wrentestsapps";
+    //private static String SUBREDDIT_NAME = "SketchDaily";
+    private static String REDDIT_DATE_REQUEST_SUFFIX = "/search.json?q=timestamp%3A";
+    private static String URL_MIDFIX = "..";
+    private static String URL_SUFFIX = "&sort=new&restrict_sr=on&syntax=cloudsearch";
+
     public static Post getPostByDate(Date date) {
         return new Post(date, getPostJSONByDate(date));
     }
@@ -60,18 +68,12 @@ public class PostLoader {
         }
         return post;
     }
-
     private static URL buildPostURLByDate(Date date) throws MalformedURLException {
-        //TODO pull out this hardcoding
-        String url_prefix = "https://www.reddit.com/r/SketchDaily/search.json?q=timestamp%3A";
-        String url_midfix = "..";
-        String url_suffix = "&sort=new&restrict_sr=on&syntax=cloudsearch";
-
-        String url = url_prefix +
+        String url = REDDIT_URL + SUBREDDIT_NAME + REDDIT_DATE_REQUEST_SUFFIX +
                 date.getUnix_mintime() +
-                url_midfix +
+                URL_MIDFIX +
                 date.getUnix_maxtime() +
-                url_suffix;
+                URL_SUFFIX;
 
         System.out.println("Loading " + url);
         return new URL(url);
@@ -140,7 +142,7 @@ public class PostLoader {
                 comments.add(new Comment(element.getAsJsonObject()));
             }
             //TODO we're truncating comments at 30 for now
-            comments.subList(30,comments.size()).clear();
+            if(comments.size() > 30) comments.subList(30,comments.size()).clear();
         } catch (MalformedURLException e){
             System.err.println(e);
             return null;

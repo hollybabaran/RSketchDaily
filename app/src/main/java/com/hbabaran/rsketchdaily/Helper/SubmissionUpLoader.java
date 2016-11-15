@@ -8,6 +8,11 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.Base64;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import net.dean.jraw.http.oauth.OAuthHelper;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -23,11 +28,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.http.HTTP;
 
 import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
 
@@ -36,6 +44,7 @@ import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
  */
 
 public class SubmissionUpLoader {
+    private static final int IMAGE_MAX_SIZE = 600;
 
     public static String uploadToImgur(Uri image, Context context){
         try {
@@ -61,22 +70,14 @@ public class SubmissionUpLoader {
             wr.flush();
 
             // Get the response
-            BufferedReader rd = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                stb.append(line).append("\n");
-            }
-            wr.close();
-            rd.close();
-            return parseResponseForLink(stb.toString());
+            JsonParser jp = new JsonParser(); //from gson
+            JsonElement root = jp.parse(new InputStreamReader(conn.getInputStream()));
+            return parseResponseForLink(root);
         } catch (Exception e){
             e.printStackTrace();
         }
         return null;
     }
-
-
     private static String getFileData(Uri uri, Context context){
         Bitmap image;
         try {
@@ -99,7 +100,6 @@ public class SubmissionUpLoader {
         }
         return data;
     }
-    private static final int IMAGE_MAX_SIZE = 600;
     private static Bitmap decodeFile(Uri uri, Context context) throws IOException{
         Bitmap b;
         //Decode image size
@@ -121,9 +121,26 @@ public class SubmissionUpLoader {
         fis.close();
         return b;
     }
-    private static String parseResponseForLink(String response){
+    private static String parseResponseForLink(JsonElement root){
+        return root.getAsJsonObject().getAsJsonObject("data").get("link").getAsString();
+    }
 
+    public static String postRedditComment(String imgurLink, String postLink){
+        System.out.println("attempting to post comment to reddit...");
+        try {
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    private static HttpURLConnection setBoilerplateRedditCommentRequestProperties(HttpURLConnection conn)
+            throws ProtocolException{
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("User-Agent", "android:com.hbabaran.rsketchdaily:v0.01 (by /u/hbabaran)");
+        conn.setRequestProperty("api_type", "json");
+        return conn;
     }
 
 }

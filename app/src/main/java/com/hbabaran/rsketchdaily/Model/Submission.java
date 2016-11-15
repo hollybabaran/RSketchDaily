@@ -87,14 +87,15 @@ public class Submission {
     }
 
     public Boolean uploadToImgur(Context context){
-        System.out.println("uploading uri " + this.image.toString());
         if(!hasImage()) return false;
-        System.out.println(SubmissionUpLoader.uploadToImgur(this.image, context));
-        return false;
+        this.imgurURL = SubmissionUpLoader.uploadToImgur(this.image, context);
+        return(hasImgurURL());
     }
 
     public Boolean postComment(){
-        System.out.println("here we fake uploading to reddit...");
-        return false;
+        if(!hasImgurURL() || !hasPost()) return false;
+        this.commentURL = SubmissionUpLoader.postRedditComment(
+                this.getImgurURL(), this.getPostURL());
+        return(hasCommentURL());
     }
 }
