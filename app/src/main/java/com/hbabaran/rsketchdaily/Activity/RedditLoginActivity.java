@@ -24,7 +24,7 @@ import java.net.URL;
 public class RedditLoginActivity extends AppCompatActivity {
 
     private static final String CLIENT_ID = "0v3TmYkG3wAXaA";
-    private static final String REDIRECT_URL = "http://rsketchdaily.hbabaran.com";
+    private static final String REDIRECT_URL = "https://rsketchdaily.hbabaran.com";
     public static final Credentials CREDENTIALS = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
 
     @Override
@@ -36,7 +36,7 @@ public class RedditLoginActivity extends AppCompatActivity {
         final OAuthHelper helper = AuthenticationManager.get().getRedditClient().getOAuthHelper();
 
         // OAuth2 scopes to request. See https://www.reddit.com/dev/api/oauth for a full list
-        String[] scopes = {"identity", "read", "history"};
+        String[] scopes = {"identity", "read", "history", "submit"};
 
         final URL authorizationUrl = helper.getAuthorizationUrl(CREDENTIALS, true, true, scopes);
         final WebView webView = ((WebView) findViewById(R.id.webview));

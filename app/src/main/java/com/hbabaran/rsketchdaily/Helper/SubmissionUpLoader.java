@@ -40,6 +40,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import retrofit2.http.HTTP;
 
 import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
@@ -130,15 +132,13 @@ public class SubmissionUpLoader {
         return root.getAsJsonObject().getAsJsonObject("data").get("link").getAsString();
     }
 
-    public static String postRedditComment(String imgurLink, String postLink, RedditClient client){
+    public static String postRedditComment(String imgurLink, String postID, String commentText,
+                                           RedditClient client){
         System.out.println("attempting to post comment to reddit...");
         try {
-            Submission redditPost = client.getSubmission("5e6vdd"); //TODO get id instead of url
-            System.out.println(client.getAuthenticatedUser());
-            System.out.println(client.getOAuthData().getScopes()[0]);
+            Submission redditPost = client.getSubmission(postID);
             AccountManager acm = new AccountManager(client);
-            System.out.println(acm.getKarmaBreakdown());
-            acm.reply(redditPost, "test");
+            return acm.reply(redditPost, "[" + commentText + "](" + imgurLink + ")");
         } catch (Exception e) {
             System.err.println("Could not post reddit comment: ");
             e.printStackTrace();

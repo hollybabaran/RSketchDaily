@@ -39,7 +39,6 @@ import net.dean.jraw.http.oauth.OAuthHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +82,7 @@ public class SubmissionActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         this.postDate = new Date(bundle.getLong("date")).toPrimitive();
-        this.submission.setPost(bundle.getString("url"));
+        this.submission.setPost(bundle.getString("id"));
         this.postTitle = bundle.getString("title");
         if (this.postTitle == null) {
             new downloadPostInfo().execute(this.postDate);
@@ -208,9 +207,9 @@ public class SubmissionActivity extends AppCompatActivity {
         Toast.makeText(this, progress, Toast.LENGTH_LONG).show();
     }
 
-    public void updatePostInfo(String title, String url) {
+    public void updatePostInfo(String title, String id) {
         this.postTitle = title;
-        this.submission.setPost(url);
+        this.submission.setPost(id);
         updateSubmissionButton();
         setupActionBar();
     }
@@ -258,7 +257,7 @@ public class SubmissionActivity extends AppCompatActivity {
             Post post = PostLoader.getPostByDate(new Date(date[0]));
             List<String> postInfo = new ArrayList<>();
             postInfo.add(post.getTitle());
-            postInfo.add(post.getPostURL().toString());
+            postInfo.add(post.getID().toString());
             return postInfo;
         }
 

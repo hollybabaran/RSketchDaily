@@ -49,7 +49,7 @@ public class GalleryActivity extends AppCompatActivity {
             switch(resultCode){
                 case POST_LOADED:
                     setPostInfo(resultData.getString("title"),
-                                resultData.getString("url"),
+                                resultData.getString("id"),
                                 resultData.getLong("date"));
                     //TODO self text
                     break;
@@ -116,11 +116,11 @@ public class GalleryActivity extends AppCompatActivity {
         bundle.putLong("date", post_date);
         setSubmissionButtonIntent(bundle);
     }
-    private void updateSubmissionButton(String title, String url, long post_date){
+    private void updateSubmissionButton(String title, String id, long post_date){
         Bundle bundle = new Bundle();
         bundle.putLong("date", post_date);
         bundle.putString("title", title);
-        bundle.putString("url", url);
+        bundle.putString("id", id);
         setSubmissionButtonIntent(bundle);
     }
 
@@ -146,9 +146,9 @@ public class GalleryActivity extends AppCompatActivity {
         this.adapter.notifyDataSetChanged();
     }
 
-    protected void setPostInfo(String title, String url, long date){
+    protected void setPostInfo(String title, String id, long date){
         updateActionBar(title);
-        updateSubmissionButton(title, url, date);
+        updateSubmissionButton(title, id, date);
     }
 
 

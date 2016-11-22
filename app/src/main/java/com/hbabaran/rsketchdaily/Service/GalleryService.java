@@ -45,8 +45,8 @@ public class GalleryService extends IntentService {
 
         postinfo.putString("title", post.getTitle());
         postinfo.putLong("date", post.getDate().toPrimitive());
-        if( post.getPostURL() != null) {
-            postinfo.putString("url", post.getPostURL().toString()); //TODO self text
+        if( post.getID() != null) {
+            postinfo.putString("id", post.getID().toString()); //TODO self text
         }
         rec.send(GalleryActivity.POST_LOADED, postinfo);
 

@@ -23,18 +23,18 @@ import java.net.URL;
 public class Submission {
 
 
-    private String postURL;
+    private String postID;
     private Uri image;
     private String submissionText;
     private String imgurURL;
-    private String commentURL;
+    private String commentID;
 
     public Submission(){
-        this.postURL = null;
+        this.postID = null;
         this.image = null;
         this.submissionText = null;
         this.imgurURL = null;
-        this.commentURL = null;
+        this.commentID = null;
     }
 
     public void setImage(Uri image){
@@ -43,17 +43,15 @@ public class Submission {
     public void setText(String submissionText){
         this.submissionText = submissionText;
     }
-    public void setPost(String post){
-        this.postURL = post;
+    public void setPost(String id){
+        this.postID = id;
     }
-    public void setImgurURL(String url){ this.imgurURL = url; }
-    public void setCommentURL(String url){ this.commentURL = url; }
 
     public Uri getImage(){ return this.image; }
     public String getSubmissionText(){ return this.submissionText; }
-    public String getPostURL(){ return this.postURL; }
+    public String getPostID(){ return this.postID; }
     public String getImgurURL(){ return this.imgurURL; }
-    public String getCommentURL(){ return this.imgurURL; }
+    public String getCommentID(){ return this.commentID; }
 
     public boolean hasComment(){
         return (this.submissionText != null && !this.submissionText.equals(""));
@@ -62,10 +60,10 @@ public class Submission {
         return (this.image != null);
     }
     public boolean hasPost(){
-        return (this.postURL != null);
+        return (this.postID != null);
     }
     public boolean hasImgurURL() { return (this.imgurURL != null); }
-    public boolean hasCommentURL() { return (this.commentURL != null); }
+    public boolean hasCommentID() { return (this.commentID != null); }
 
     public int isValidSubmission(){
         if(!hasPost()) return SubmissionActivity.MESSAGE_MISSING_POST;
@@ -75,7 +73,7 @@ public class Submission {
     }
 
     public Boolean submissionSuccessful(){
-        return (this.imgurURL != null && this.commentURL != null);
+        return (this.imgurURL != null && this.commentID != null);
     }
 
     public Boolean saveImage(Context context){
@@ -88,15 +86,14 @@ public class Submission {
 
     public Boolean uploadToImgur(Context context){
         if(!hasImage()) return false;
-        //this.imgurURL = SubmissionUpLoader.uploadToImgur(this.image, context);
-        this.imgurURL = "foo";
+        this.imgurURL = SubmissionUpLoader.uploadToImgur(this.image, context);
         return(hasImgurURL());
     }
 
     public Boolean postComment(RedditClient redditClient){
         if(!hasImgurURL() || !hasPost()) return false;
-        this.commentURL = SubmissionUpLoader.postRedditComment(
-                this.getImgurURL(), this.getPostURL(), redditClient);
-        return(hasCommentURL());
+        this.commentID = SubmissionUpLoader.postRedditComment(
+                this.getImgurURL(), this.getPostID(), this.getSubmissionText(), redditClient);
+        return(hasCommentID());
     }
 }

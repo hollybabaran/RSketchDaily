@@ -26,6 +26,7 @@ public class Post {
     private String selftext;
     private Date date; //NOT the direct Unix "date" in the object.
     private URL postURL;
+    private String id;
     ArrayList<Comment> comments;
     private SortMethod sortMethod;
 
@@ -41,6 +42,7 @@ public class Post {
             try {
                 this.title = post.getJSONObject("data").getString("title");
                 this.selftext = post.getJSONObject("data").getString("selftext");
+                this.id = post.getJSONObject("data").getString("id");
                 this.postURL = new URL(post.getJSONObject("data").getString("url").replaceAll("\\\\",""));
             } catch (JSONException e) {
                 System.err.println("error parsing post JSON: " + e);
@@ -65,22 +67,20 @@ public class Post {
     public Date getDate() {
         return date;
     }
-    public void setDate(Date date) {
-        this.date = date;
-    }
     public URL getPostURL() {
         return postURL;
     }
-    public void setPostURL(URL postURL) {
-        this.postURL = postURL;
+    public String getID() {
+        return this.id;
     }
+
 
 
 
     //TODO: some sort of caching of the comments / "updatecomments"
     //For now updateComments just loads them all anew
     public void updateComments(){
-        this.comments = PostLoader.parseCommentsFromPost(this.postURL);
+        this.comments = PostLoader.parseCommentsFromPost(getPostURL());
         if(this.comments!= null) sortComments();
     }
 
