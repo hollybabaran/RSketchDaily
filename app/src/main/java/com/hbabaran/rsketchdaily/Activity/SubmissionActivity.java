@@ -22,13 +22,24 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hbabaran.rsketchdaily.Helper.PostLoader;
+import com.hbabaran.rsketchdaily.Helper.RedditLogin;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.hbabaran.rsketchdaily.Model.Post;
 import com.hbabaran.rsketchdaily.Model.Submission;
 import com.hbabaran.rsketchdaily.R;
 
+import net.dean.jraw.RedditClient;
+import net.dean.jraw.auth.AuthenticationManager;
+import net.dean.jraw.auth.AuthenticationState;
+import net.dean.jraw.auth.NoSuchTokenException;
+import net.dean.jraw.http.UserAgent;
+import net.dean.jraw.http.oauth.Credentials;
+import net.dean.jraw.http.oauth.OAuthException;
+import net.dean.jraw.http.oauth.OAuthHelper;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,19 +69,17 @@ public class SubmissionActivity extends AppCompatActivity {
     private long postDate;
     private File cameraFile;
     private Uri cameraURI;
-
     private Submission submission;
 
-    private Context mContext;
+    private RedditLogin redditLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission);
-        this.mContext = this.getApplicationContext();
         this.commentBox = (EditText)findViewById(R.id.comment_box);
 
-        this.submission = new Submission(getApplicationContext());
+        this.submission = new Submission();
 
         Bundle bundle = getIntent().getExtras();
         this.postDate = new Date(bundle.getLong("date")).toPrimitive();
@@ -88,8 +97,15 @@ public class SubmissionActivity extends AppCompatActivity {
         } else {
             disableCameraButton();
         }
-
+        this.redditLogin = new RedditLogin();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.redditLogin.refreshLogin(getApplicationContext());
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -128,6 +144,7 @@ public class SubmissionActivity extends AppCompatActivity {
         this.galleryPhotoChooserButton.setOnClickListener(
                 new IntentResultListener(photoPickerIntent, PHOTO_FROM_GALLERY));
     }
+
 
     private void setupCameraFile() throws IOException {
         //TODO Request permission to write to shared directory??
@@ -212,11 +229,11 @@ public class SubmissionActivity extends AppCompatActivity {
     private class submit extends AsyncTask<Submission, Integer, Submission> {
         protected Submission doInBackground(Submission... submission) {
             publishProgress(SubmissionActivity.PROGRESS_SAVING_IMAGE);
-            if(submission[0].saveImage()) {
+            if(submission[0].saveImage(getApplicationContext())) {
                 publishProgress(SubmissionActivity.PROGRESS_UPLOADING_IMAGE);
-                if (submission[0].uploadToImgur(mContext)) {
+                if (submission[0].uploadToImgur(getApplicationContext())) {
                     publishProgress(SubmissionActivity.PROGRESS_POSTING_COMMENT);
-                    submission[0].postComment();
+                    submission[0].postComment(redditLogin.client());
                 }
             }
             return submission[0];
@@ -274,11 +291,16 @@ public class SubmissionActivity extends AppCompatActivity {
         public void onClick(View v) {
             submission.setText(commentBox.getText().toString());
             int errorCode = submission.isValidSubmission();
-            if(errorCode == SubmissionActivity.SUBMISSION_VALID){
-                new submit().execute(this.submission);
-            } else{
+            if(errorCode != SubmissionActivity.SUBMISSION_VALID) {
                 Toast.makeText(this.activity, errorCode, Toast.LENGTH_SHORT).show();
+                return;
             }
+            if(!redditLogin.isReady()){
+                Toast.makeText(this.activity, R.string.submission_reddit_login_waiting, Toast.LENGTH_SHORT).show();
+                redditLogin.refreshLogin(getApplicationContext());
+                return;
+            }
+            new submit().execute(this.submission);
         }
     }
 }

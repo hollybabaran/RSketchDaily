@@ -8,6 +8,8 @@ import android.os.Environment;
 import com.hbabaran.rsketchdaily.Activity.SubmissionActivity;
 import com.hbabaran.rsketchdaily.Helper.SubmissionUpLoader;
 
+import net.dean.jraw.RedditClient;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import java.net.URL;
 
 public class Submission {
 
-    private Context context;
 
     private String postURL;
     private Uri image;
@@ -28,8 +29,7 @@ public class Submission {
     private String imgurURL;
     private String commentURL;
 
-    public Submission(Context context){
-        this.context = context;
+    public Submission(){
         this.postURL = null;
         this.image = null;
         this.submissionText = null;
@@ -78,7 +78,7 @@ public class Submission {
         return (this.imgurURL != null && this.commentURL != null);
     }
 
-    public Boolean saveImage(){
+    public Boolean saveImage(Context context){
         if(!hasImage()) return false;
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(this.image);
@@ -88,14 +88,15 @@ public class Submission {
 
     public Boolean uploadToImgur(Context context){
         if(!hasImage()) return false;
-        this.imgurURL = SubmissionUpLoader.uploadToImgur(this.image, context);
+        //this.imgurURL = SubmissionUpLoader.uploadToImgur(this.image, context);
+        this.imgurURL = "foo";
         return(hasImgurURL());
     }
 
-    public Boolean postComment(){
+    public Boolean postComment(RedditClient redditClient){
         if(!hasImgurURL() || !hasPost()) return false;
         this.commentURL = SubmissionUpLoader.postRedditComment(
-                this.getImgurURL(), this.getPostURL());
+                this.getImgurURL(), this.getPostURL(), redditClient);
         return(hasCommentURL());
     }
 }

@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 public class Date implements Serializable {
     long unix_maxtime; //11:59 PM
     long unix_mintime; //12:01 AM
+    private static long EIGHT_HRS_IN_SECONDS = 28800L;
 
     //begin static functions
     public static long getUnixMintime(Calendar date){
@@ -20,7 +21,7 @@ public class Date implements Serializable {
                 date.get(Calendar.DAY_OF_MONTH),
                 0,
                 1);
-        return mintime.getTimeInMillis() / 1000L;
+        return mintime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
     public static long getUnixMaxtime(Calendar date){
@@ -30,7 +31,7 @@ public class Date implements Serializable {
                 date.get(Calendar.DAY_OF_MONTH),
                 23,
                 59);
-        return maxtime.getTimeInMillis() / 1000L;
+        return maxtime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
     public static long getUnixMintime(long unixTime){
@@ -42,7 +43,7 @@ public class Date implements Serializable {
                 uTime.get(Calendar.DAY_OF_MONTH),
                 0,
                 1);
-        return mintime.getTimeInMillis() / 1000L;
+        return mintime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
     public static long getUnixMaxtime(long unixTime){
@@ -54,7 +55,7 @@ public class Date implements Serializable {
                 uTime.get(Calendar.DAY_OF_MONTH),
                 23,
                 59);
-        return maxtime.getTimeInMillis() / 1000L;
+        return maxtime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
 

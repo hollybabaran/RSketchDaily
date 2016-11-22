@@ -11,7 +11,12 @@ import android.util.Base64;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import net.dean.jraw.ApiException;
+import net.dean.jraw.RedditClient;
+import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.oauth.OAuthHelper;
+import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.models.Submission;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -125,23 +130,23 @@ public class SubmissionUpLoader {
         return root.getAsJsonObject().getAsJsonObject("data").get("link").getAsString();
     }
 
-    public static String postRedditComment(String imgurLink, String postLink){
+    public static String postRedditComment(String imgurLink, String postLink, RedditClient client){
         System.out.println("attempting to post comment to reddit...");
         try {
-
-        } catch (Exception e){
+            Submission redditPost = client.getSubmission("5e6vdd"); //TODO get id instead of url
+            System.out.println(client.getAuthenticatedUser());
+            System.out.println(client.getOAuthData().getScopes()[0]);
+            AccountManager acm = new AccountManager(client);
+            System.out.println(acm.getKarmaBreakdown());
+            acm.reply(redditPost, "test");
+        } catch (Exception e) {
+            System.err.println("Could not post reddit comment: ");
             e.printStackTrace();
         }
         return null;
     }
 
-    private static HttpURLConnection setBoilerplateRedditCommentRequestProperties(HttpURLConnection conn)
-            throws ProtocolException{
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("User-Agent", "android:com.hbabaran.rsketchdaily:v0.01 (by /u/hbabaran)");
-        conn.setRequestProperty("api_type", "json");
-        return conn;
-    }
+
 
 }
 

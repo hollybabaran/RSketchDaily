@@ -14,5 +14,9 @@
     <string name="submission_progress_posting_comment">Posting to reddit...</string>
     <string name="submission_progress_success">Success!</string>
     <string name="submission_progress_failure">There was a problem uploading your comment. Try again later.</string>
+    <string name="title_activity_reddit_login">Sign in</string>
+    <string name="submission_reddit_login_waiting">You are not logged into reddit</string>
+
+
 
 </resources>

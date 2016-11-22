@@ -81,7 +81,7 @@ public class Post {
     //For now updateComments just loads them all anew
     public void updateComments(){
         this.comments = PostLoader.parseCommentsFromPost(this.postURL);
-        sortComments();
+        if(this.comments!= null) sortComments();
     }
 
     private class SortByNew implements Comparator<Comment> {
