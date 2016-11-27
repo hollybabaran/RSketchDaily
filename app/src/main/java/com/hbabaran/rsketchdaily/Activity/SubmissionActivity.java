@@ -28,14 +28,7 @@ import com.hbabaran.rsketchdaily.Model.Post;
 import com.hbabaran.rsketchdaily.Model.Submission;
 import com.hbabaran.rsketchdaily.R;
 
-import net.dean.jraw.RedditClient;
-import net.dean.jraw.auth.AuthenticationManager;
-import net.dean.jraw.auth.AuthenticationState;
-import net.dean.jraw.auth.NoSuchTokenException;
-import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +89,8 @@ public class SubmissionActivity extends AppCompatActivity {
         } else {
             disableCameraButton();
         }
-        this.redditLogin = new RedditLogin();
+        this.redditLogin = new RedditLogin(getApplicationContext().
+                getSharedPreferences(getString(R.string.prefs_reddit_login), Context.MODE_PRIVATE));
     }
 
     @Override

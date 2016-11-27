@@ -91,7 +91,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
+
                 android:text="I like how this one turned out!"
                 android:ems="10"
                 android:id="@+id/comment_box"

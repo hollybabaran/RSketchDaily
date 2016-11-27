@@ -17,5 +17,6 @@
     <string name="title_activity_reddit_login">Sign in</string>
     <string name="submission_reddit_login_waiting">You are not logged into reddit</string>
 
+    <string name="prefs_reddit_login">RedditLogin</string>
 
 </resources>
