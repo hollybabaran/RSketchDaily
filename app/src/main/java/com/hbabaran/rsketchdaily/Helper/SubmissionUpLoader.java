@@ -1,50 +1,30 @@
 package com.hbabaran.rsketchdaily.Helper;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
+import android.os.Build;
 import android.util.Base64;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
-import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.http.oauth.OAuthHelper;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-
-import retrofit2.http.HTTP;
-
-import static com.hbabaran.rsketchdaily.Helper.AuthConstants.IMGUR_CLIENT_ID;
 
 /**
  * Created by wren on 11/11/2016.
@@ -71,7 +51,6 @@ public class SubmissionUpLoader {
                     "application/x-www-form-urlencoded");
 
             conn.connect();
-            StringBuilder stb = new StringBuilder();
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(data);
             wr.flush();
@@ -128,6 +107,9 @@ public class SubmissionUpLoader {
         fis.close();
         return b;
     }
+
+
+
     private static String parseResponseForLink(JsonElement root){
         return root.getAsJsonObject().getAsJsonObject("data").get("link").getAsString();
     }

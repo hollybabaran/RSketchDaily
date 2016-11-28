@@ -37,10 +37,11 @@ import java.util.List;
 
 public class SubmissionActivity extends AppCompatActivity {
 
-    //public static final String MEDIA_DIR = "Android/data/RSketchDaily";
+
     public static final int PHOTO_FROM_GALLERY = 1;
     public static final int PHOTO_FROM_CAMERA = 2;
     public static final int REQUEST_CAMERA_PERMISSION = 3;
+    public static final int REQUEST_WRITE_PERMISSION = 4;
     public static final int SUBMISSION_VALID = -1;
 
     public static final int PROGRESS_SAVING_IMAGE = R.string.submission_progress_saving_image;
@@ -64,6 +65,8 @@ public class SubmissionActivity extends AppCompatActivity {
     private Submission submission;
 
     private RedditLogin redditLogin;
+
+    private Boolean savePicsPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class SubmissionActivity extends AppCompatActivity {
         } else {
             disableCameraButton();
         }
+        requestWriteFilePermissions();
         this.redditLogin = new RedditLogin(getApplicationContext().
                 getSharedPreferences(getString(R.string.prefs_reddit_login), Context.MODE_PRIVATE));
     }
@@ -105,10 +109,12 @@ public class SubmissionActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PHOTO_FROM_GALLERY:
-                    this.submission.setImage(data.getData());
+                    this.submission.setImageURI(data.getData());
+                    this.submission.setImageFile(null); //TODO maybe copy gallery pictures later?
                     break;
                 case PHOTO_FROM_CAMERA:
-                    this.submission.setImage(this.cameraURI);
+                    this.submission.setImageURI(this.cameraURI);
+                    this.submission.setImageFile(this.cameraFile);
                     break;
                 default:
                     System.err.println("ERROR: photo picker, activity result not recognized");
@@ -120,13 +126,23 @@ public class SubmissionActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupCameraButton();
-            } else {
-                Toast.makeText(this, "Camera use disabled", Toast.LENGTH_SHORT).show();
-                disableCameraButton();
-            }
+        switch(requestCode) {
+            case REQUEST_CAMERA_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setupCameraButton();
+                } else {
+                    Toast.makeText(this, "Camera use disabled", Toast.LENGTH_SHORT).show();
+                    disableCameraButton();
+                }
+                break;
+            case REQUEST_WRITE_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    this.savePicsPermission = true;
+                } else {
+                    Toast.makeText(this, "Camera pictures will not be saved to gallery", Toast.LENGTH_SHORT).show();
+                    this.savePicsPermission = false;
+                }
+                break;
         }
     }
 
@@ -189,7 +205,7 @@ public class SubmissionActivity extends AppCompatActivity {
     private void updateThumbnail() {
         ImageView display = (ImageView) findViewById(R.id.pic_selection_display);
         display.setImageDrawable(null);
-        display.setImageURI(this.submission.getImage());
+        display.setImageURI(this.submission.getImageURI());
     }
 
     private void updateSubmissionButton(){
@@ -219,10 +235,22 @@ public class SubmissionActivity extends AppCompatActivity {
         }
     }
 
+    private void requestWriteFilePermissions() {
+        this.savePicsPermission = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_PERMISSION);
+        } else {
+            //TODO test on lower build versions the assumption that manifest permissions are fine
+            this.savePicsPermission = true;
+        }
+    }
+
     private class submit extends AsyncTask<Submission, Integer, Submission> {
         protected Submission doInBackground(Submission... submission) {
-            publishProgress(SubmissionActivity.PROGRESS_SAVING_IMAGE);
-            if(submission[0].saveImage(getApplicationContext())) {
+            if(savePicsPermission) publishProgress(SubmissionActivity.PROGRESS_SAVING_IMAGE);
+            if(!savePicsPermission || submission[0].saveImage(getApplicationContext())) {
                 publishProgress(SubmissionActivity.PROGRESS_UPLOADING_IMAGE);
                 if (submission[0].uploadToImgur(getApplicationContext())) {
                     publishProgress(SubmissionActivity.PROGRESS_POSTING_COMMENT);
