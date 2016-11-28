@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SubmissionActivity extends AppCompatActivity {
 
@@ -72,8 +73,8 @@ public class SubmissionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission);
-        this.commentBox = (EditText)findViewById(R.id.comment_box);
 
+        setupCommentBox();
         this.submission = new Submission();
 
         Bundle bundle = getIntent().getExtras();
@@ -175,6 +176,13 @@ public class SubmissionActivity extends AppCompatActivity {
         } else {
             ab.setTitle(R.string.loading);
         }
+    }
+
+    private void setupCommentBox(){
+        this.commentBox = (EditText)findViewById(R.id.comment_box);
+        String[] default_comments = getResources().getStringArray(R.array.default_comments);
+        String comment = default_comments[new Random().nextInt(default_comments.length)];
+        this.commentBox.setText(comment);
     }
 
     private void setupCameraButton() {

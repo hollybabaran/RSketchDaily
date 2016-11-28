@@ -19,4 +19,17 @@
 
     <string name="prefs_reddit_login">RedditLogin</string>
 
+    <string-array name="default_comments">
+        <item name="default_comment_1">My daily sketch!</item>
+        <item name="default_comment_2">I like how this one turned out.</item>
+        <item name="default_comment_3">I tried my best!</item>
+        <item name="default_comment_4">Here goes nothing!</item>
+        <item name="default_comment_5">I\'m proud of this one.</item>
+        <item name="default_comment_6">This went better than I thought it would.</item>
+        <item name="default_comment_7">This was fun to draw.</item>
+        <item name="default_comment_8">This was a cool topic.</item>
+        <item name="default_comment_9">Comments, compliments and criticism welcome!</item>
+        <item name="default_comment_10">Posted using RSketchDaily.</item>
+    </string-array>
+
 </resources>
