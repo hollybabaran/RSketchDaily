@@ -232,6 +232,14 @@ public class SubmissionActivity extends AppCompatActivity {
         setupActionBar();
     }
 
+    private Intent generateCommentIntent(Submission submission){
+        Bundle extras = new Bundle();
+        extras.putString("id", submission.getCommentID());
+        Intent commentIntent = new Intent(this, CommentActivity.class);
+        commentIntent.putExtras(extras);
+        return commentIntent;
+    }
+
     private void requestCameraPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -275,10 +283,12 @@ public class SubmissionActivity extends AppCompatActivity {
         protected void onPostExecute(Submission submission) {
             if(submission.submissionSuccessful()){
                 updateSubmissionProgress(PROGRESS_SUCCESS);
+                //start commentactivity
+                startActivity(generateCommentIntent(submission));
+                //TODO figure out how to close this submission activity so hitting "back" goes back to gallery
             } else{
                 updateSubmissionProgress(PROGRESS_FAILURE);
             }
-            //TODO send back to gallery / commentview
         }
     }
 

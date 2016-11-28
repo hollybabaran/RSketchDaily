@@ -45,8 +45,8 @@ public class CommentLoader {
 
     public static URL queryImgurURL(URL link) throws MalformedURLException, IOException{
         Matcher image = Pattern.compile("http[s]?://([m\\.]*?)imgur\\.com/([a-zA-z0-9]+)[_[0-9]+x[0-9]+]?").matcher(link.toString());
-        Matcher album = Pattern.compile("http[s]?://([m\\.]*?)imgur\\.com/a/([a-zA-z0-9]+)").matcher(link.toString());
-        //TODO match https://imgur.com/gallery/nGBcb
+        Matcher album = Pattern.compile("http[s]?://([m\\.]*?)imgur\\.com/(a|gallery)/([a-zA-z0-9]+)").matcher(link.toString());
+        //TODO match gallery
         JsonObject imageInfo;
         String imgURL;
         if(image.matches()) {
@@ -56,7 +56,7 @@ public class CommentLoader {
                                 .toString().replaceAll("\\\\","").replaceAll("\"","");
             return new URL(imgURL);
         } else if(album.matches()){
-            imageInfo = PostLoader.downloadJson(new URL("https://" + IMGUR_CLIENT_ID + "@api.imgur.com/3/album/" + album.group(2)), "Authorization", "Client-ID "+IMGUR_CLIENT_ID).getAsJsonObject();
+            imageInfo = PostLoader.downloadJson(new URL("https://" + IMGUR_CLIENT_ID + "@api.imgur.com/3/album/" + album.group(3)), "Authorization", "Client-ID "+IMGUR_CLIENT_ID).getAsJsonObject();
             imgURL = imageInfo.getAsJsonObject("data")
                                 .getAsJsonArray("images")
                                 .get(0).getAsJsonObject()

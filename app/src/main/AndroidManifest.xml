@@ -10,10 +10,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -37,14 +33,6 @@
         <activity
             android:name=".Activity.SubmissionActivity"
             android:launchMode="singleTask">
-
-            <!--
-            <intent-filter>
-                <data android:scheme="com.hbabaran.rsketchdaily" />
-
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-            -->
         </activity>
 
         <provider

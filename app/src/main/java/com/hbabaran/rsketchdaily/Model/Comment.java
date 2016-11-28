@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 public class Comment { //TODO make this abstract and differentiate ImageComment vs ChildComment
     private String commentID;
-    private String id;
     private float time; //time comment was posted
     private String bodyText;
 

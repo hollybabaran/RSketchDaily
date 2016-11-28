@@ -58,7 +58,7 @@ public class GalleryService extends IntentService {
             commentCount.putInt("count", comments.size());
             rec.send(GalleryActivity.COMMENT_COUNT, commentCount);
             //send comments
-            //TODO consider making a comment serializable... especially if you want to convert back into a comment and pass the comment directly to the GalleryCommentGridImageAdapter
+            //TODO consider making a comment serializable... especially if you want to convert back into a comment and pass the comment directly to the GalleryImageAdapter
             for (int i = 0; i < comments.size(); i++) {
                 Bundle commentInfo = new Bundle();
                 commentInfo.putInt("position", i);
