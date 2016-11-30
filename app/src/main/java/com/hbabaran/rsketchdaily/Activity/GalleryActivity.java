@@ -34,6 +34,8 @@ public class GalleryActivity extends AppCompatActivity {
     public static final int COMMENT_LOADED = 2;
     public GalleryReceiver mReceiver;
 
+    private String[] commentIDs;
+    private String postPermalink;
 
     GridView gridview;
     GalleryImageAdapter adapter;
@@ -51,6 +53,7 @@ public class GalleryActivity extends AppCompatActivity {
                     setPostInfo(resultData.getString("title"),
                                 resultData.getString("id"),
                                 resultData.getLong("date"));
+                    postPermalink = resultData.getString("permalink");
                     //TODO self text
                     break;
                 case COMMENT_COUNT:
@@ -59,6 +62,7 @@ public class GalleryActivity extends AppCompatActivity {
                     break;
                 case COMMENT_LOADED:
                     sendCommentImage(resultData.getInt("position"), resultData.getByteArray("img"));
+                    commentIDs[resultData.getInt("position")] = resultData.getString("id");
                     break;
                 default:
                     //throw an error?
@@ -91,15 +95,25 @@ public class GalleryActivity extends AppCompatActivity {
         return true;
     }
 
+    private Intent generateCommentIntent(String url){
+        Bundle extras = new Bundle();
+        extras.putString("url", url);
+        Intent commentIntent = new Intent(this, CommentActivity.class);
+        commentIntent.putExtras(extras);
+        return commentIntent;
+    }
+
     private void setupGridView(int commentCount){
+        this.commentIDs = new String[commentCount];
         this.gridview = (GridView) findViewById(R.id.gridview);
         this.adapter = new GalleryImageAdapter(this, commentCount);
         this.gridview.setAdapter(this.adapter);
         this.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(GalleryActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+                if(commentIDs[position] != null && postPermalink != null){
+                    startActivity(generateCommentIntent(postPermalink + commentIDs[position]));
+                }
             }
         });
     }

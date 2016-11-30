@@ -42,7 +42,7 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
         this.linkType = null;
         if (comment != null) {
             JsonObject data = comment.getAsJsonObject("data");
-            this.commentID = data.get("id").toString();
+            this.commentID = data.get("id").toString().replace("\"","");
             this.time = Float.parseFloat(data.get("created").toString());
             this.bodyText = data.get("body").toString();
         }
@@ -99,7 +99,7 @@ public class Comment { //TODO make this abstract and differentiate ImageComment 
         return imageURL;
     }
 
-    String getCommentID(){
+    public String getCommentID(){
         return commentID;
     }
     Float getTime(){ return time; }

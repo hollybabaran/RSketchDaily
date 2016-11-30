@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Intent startToday = new Intent(this, GalleryActivity.class);
         startToday.putExtras(bundle);
         startActivity(startToday);
-
+        finish();
 
     }
 

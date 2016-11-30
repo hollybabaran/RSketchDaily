@@ -234,7 +234,7 @@ public class SubmissionActivity extends AppCompatActivity {
 
     private Intent generateCommentIntent(Submission submission){
         Bundle extras = new Bundle();
-        extras.putString("id", submission.getCommentID());
+        extras.putString("url", submission.getCommentURL());
         Intent commentIntent = new Intent(this, CommentActivity.class);
         commentIntent.putExtras(extras);
         return commentIntent;
@@ -283,9 +283,12 @@ public class SubmissionActivity extends AppCompatActivity {
         protected void onPostExecute(Submission submission) {
             if(submission.submissionSuccessful()){
                 updateSubmissionProgress(PROGRESS_SUCCESS);
-                //start commentactivity
+                //sleep because reddit doesn't update immediately
+                try{ Thread.sleep(2000); } catch(InterruptedException e) { e.printStackTrace(); }
                 startActivity(generateCommentIntent(submission));
-                //TODO figure out how to close this submission activity so hitting "back" goes back to gallery
+                //then sleep before killing submission thread
+                //try{ Thread.sleep(5000); } catch(InterruptedException e) { e.printStackTrace(); }
+                finish();
             } else{
                 updateSubmissionProgress(PROGRESS_FAILURE);
             }

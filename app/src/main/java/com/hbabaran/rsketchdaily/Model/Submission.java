@@ -28,7 +28,7 @@ public class Submission {
     private File imageFile;
     private String submissionText;
     private String imgurURL;
-    private String commentID;
+    private String commentURL;
 
     private Boolean savePics; //whether or not to save picture
 
@@ -37,7 +37,7 @@ public class Submission {
         this.image = null;
         this.submissionText = null;
         this.imgurURL = null;
-        this.commentID = null;
+        this.commentURL = null;
         this.imageFile = null;
     }
 
@@ -56,7 +56,7 @@ public class Submission {
     public String getSubmissionText(){ return this.submissionText; }
     public String getPostID(){ return this.postID; }
     public String getImgurURL(){ return this.imgurURL; }
-    public String getCommentID(){ return this.commentID; }
+    public String getCommentURL(){ return this.commentURL; }
     public File getImageFile(){ return this.imageFile; }
 
     public boolean hasComment(){
@@ -69,7 +69,7 @@ public class Submission {
         return (this.postID != null);
     }
     public boolean hasImgurURL() { return (this.imgurURL != null); }
-    public boolean hasCommentID() { return (this.commentID != null); }
+    public boolean hasCommentURL() { return (this.commentURL != null); }
     private boolean hasImageFile() { return (this.imageFile != null); }
 
     public int isValidSubmission(){
@@ -80,7 +80,7 @@ public class Submission {
     }
 
     public Boolean submissionSuccessful(){
-        return (this.imgurURL != null && this.commentID != null);
+        return (this.imgurURL != null && this.commentURL != null);
     }
 
     public Boolean saveImage(Context context){
@@ -127,8 +127,8 @@ public class Submission {
 
     public Boolean postComment(RedditClient redditClient){
         if(!hasImgurURL() || !hasPost()) return false;
-        this.commentID = SubmissionUpLoader.postRedditComment(
+        this.commentURL = SubmissionUpLoader.postRedditComment(
                 this.getImgurURL(), this.getPostID(), this.getSubmissionText(), redditClient);
-        return(hasCommentID());
+        return(hasCommentURL());
     }
 }

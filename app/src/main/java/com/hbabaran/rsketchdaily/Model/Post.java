@@ -38,11 +38,12 @@ public class Post {
         this.selftext = "Error loading post";
         this.postURL = null;
         this.comments = new ArrayList<Comment>();
+        this.id = "";
         if (post != null) {
             try {
                 this.title = post.getJSONObject("data").getString("title");
                 this.selftext = post.getJSONObject("data").getString("selftext");
-                this.id = post.getJSONObject("data").getString("id");
+                this.id = post.getJSONObject("data").getString("id").replace("\"","");
                 this.postURL = new URL(post.getJSONObject("data").getString("url").replaceAll("\\\\",""));
             } catch (JSONException e) {
                 System.err.println("error parsing post JSON: " + e);

@@ -13,21 +13,26 @@ import java.net.URL;
 
 public class CommentActivity extends AppCompatActivity {
 
-    private String id;
+    private String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.id = getIntent().getExtras().getString("id");
+        this.url = getIntent().getExtras().getString("url");
         setContentView(R.layout.activity_comment);
         //TODO one day actually have an inline comment view
-        //For now just open the comment in chrome
+        //For now just open the comment in browser
         final WebView webView = ((WebView) findViewById(R.id.webview));
         final URL comment;
         try {
-            comment = new URL("https://www.reddit.com/r/wrentestsapps/comments/5f80px/nov_27_have_you_ever_been_so_far_as_to_do_more/dai5jmm");
+            System.out.println("loading: "+ this.url);
+            comment = new URL(this.url);
             webView.loadUrl(comment.toExternalForm());
 
-        } catch(Exception e){}
+        } catch(Exception e){
+            System.out.println("failed to load comment url: " + this.url);
+            e.printStackTrace();
+        }
+        finish();
         // Load the authorization URL into the browser
 
     }

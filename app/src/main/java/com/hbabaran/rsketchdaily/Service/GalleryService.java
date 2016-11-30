@@ -48,6 +48,9 @@ public class GalleryService extends IntentService {
         if( post.getID() != null) {
             postinfo.putString("id", post.getID().toString()); //TODO self text
         }
+        if( post.getPostURL() != null){
+            postinfo.putString("permalink", post.getPostURL().toString());
+        }
         rec.send(GalleryActivity.POST_LOADED, postinfo);
 
         this.post.updateComments();
@@ -62,8 +65,7 @@ public class GalleryService extends IntentService {
             for (int i = 0; i < comments.size(); i++) {
                 Bundle commentInfo = new Bundle();
                 commentInfo.putInt("position", i);
-                URL url = comments.get(i).getImageURL();
-                if(url != null) commentInfo.putString("URL", url.toString());
+                commentInfo.putString("id", comments.get(i).getCommentID());
                 byte[] img = comments.get(i).downloadThumbnailImage();
                 if(img != null) commentInfo.putByteArray("img", img);
 

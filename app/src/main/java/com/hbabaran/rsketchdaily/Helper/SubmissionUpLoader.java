@@ -116,11 +116,12 @@ public class SubmissionUpLoader {
 
     public static String postRedditComment(String imgurLink, String postID, String commentText,
                                            RedditClient client){
-        System.out.println("attempting to post comment to reddit...");
         try {
             Submission redditPost = client.getSubmission(postID);
             AccountManager acm = new AccountManager(client);
-            return acm.reply(redditPost, "[" + commentText + "](" + imgurLink + ")");
+            String commentID = acm.reply(redditPost, "[" + commentText + "](" + imgurLink + ")");
+            String commentURL = "https://reddit.com" + redditPost.getPermalink() + commentID;
+            return commentURL;
         } catch (Exception e) {
             System.err.println("Could not post reddit comment: ");
             e.printStackTrace();
