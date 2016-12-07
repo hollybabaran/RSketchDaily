@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putLong("date", Date.getUnixMintime(Calendar.getInstance()));
-        Intent startToday = new Intent(this, GalleryActivity.class);
+        //Intent startToday = new Intent(this, GalleryActivity.class);
+        Intent startToday = new Intent(this, SubmissionActivity.class);
         startToday.putExtras(bundle);
         startActivity(startToday);
         finish();
