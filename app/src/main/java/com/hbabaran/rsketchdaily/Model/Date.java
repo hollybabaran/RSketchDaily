@@ -12,6 +12,7 @@ public class Date implements Serializable {
     long unix_maxtime; //11:59 PM
     long unix_mintime; //12:01 AM
     private static long EIGHT_HRS_IN_SECONDS = 28800L;
+    private static long TWENTY_FOUR_HRS_IN_SECONDS = EIGHT_HRS_IN_SECONDS * 3;
 
     //begin static functions
     public static long getUnixMintime(Calendar date){
@@ -58,6 +59,9 @@ public class Date implements Serializable {
         return maxtime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
+    public static Date getYesterday(Date today){
+        return new Date(today.getUnix_mintime() - TWENTY_FOUR_HRS_IN_SECONDS);
+    }
 
     public Date(Calendar date){
         this.unix_mintime = Date.getUnixMintime(date);

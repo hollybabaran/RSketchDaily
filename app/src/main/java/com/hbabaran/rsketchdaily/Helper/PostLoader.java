@@ -40,8 +40,13 @@ public class PostLoader {
     private static String URL_MIDFIX = "..";
     private static String URL_SUFFIX = "&sort=new&restrict_sr=on&syntax=cloudsearch";
 
-    public static Post getPostByDate(Date date) {
-        return new Post(date, getPostJSONByDate(date));
+    public static Post getPostByDate(Date today) {
+        Post post = new Post(today, getPostJSONByDate(today));
+        if(post.getID() == ""){ //could not load today probably because it's midnight - 3am; try yesterday
+            Date yesterday = Date.getYesterday(today);
+            post = new Post(yesterday, getPostJSONByDate(yesterday));
+        }
+        return post;
     }
 
     //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
