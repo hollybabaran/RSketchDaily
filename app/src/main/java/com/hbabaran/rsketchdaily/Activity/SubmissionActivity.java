@@ -101,7 +101,14 @@ public class SubmissionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        this.redditLogin.refreshLogin(getApplicationContext());
+        refreshLogin();
+    }
+
+    void refreshLogin(){
+        if(this.redditLogin.refreshLogin() == false){
+            Toast.makeText(this, "Log in first", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, RedditLoginActivity.class));
+        }
     }
 
     @Override
@@ -339,7 +346,7 @@ public class SubmissionActivity extends AppCompatActivity {
             }
             if(!redditLogin.isReady()){
                 Toast.makeText(this.activity, R.string.submission_reddit_login_waiting, Toast.LENGTH_SHORT).show();
-                redditLogin.refreshLogin(getApplicationContext());
+                refreshLogin();
                 return;
             }
             new submit().execute(this.submission);

@@ -72,20 +72,19 @@ public class RedditLogin {
 
     }
 
-    public void refreshLogin(Context context){
+    public boolean refreshLogin(){
         AuthenticationState state = this.am.checkAuthState();
         System.out.println("resuming submission activity: "+state);
         switch (state) {
             case READY:
-                break;
+                return true;
             case NONE:
-                Toast.makeText(context, "Log in first", Toast.LENGTH_SHORT).show();
-                context.startActivity(new Intent(context, RedditLoginActivity.class));
-                break;
+                return false;
             case NEED_REFRESH:
                 new refreshAccessTokenAsync().execute();
-                break;
+                return true;
         }
+        return false;
     }
 
     public Boolean isReady(){
