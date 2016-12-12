@@ -33,7 +33,7 @@ public class Submission {
     private Boolean savePics; //whether or not to save picture
 
     public Submission(){
-        this.postID = null;
+        this.postID = "";
         this.image = null;
         this.submissionText = null;
         this.imgurURL = null;
@@ -66,7 +66,7 @@ public class Submission {
         return (this.image != null);
     }
     public boolean hasPost(){
-        return (this.postID != null);
+        return (this.postID != "");
     }
     public boolean hasImgurURL() { return (this.imgurURL != null); }
     public boolean hasCommentURL() { return (this.commentURL != null); }

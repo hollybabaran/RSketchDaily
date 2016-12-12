@@ -98,6 +98,33 @@ public class SubmissionActivity extends AppCompatActivity {
                 getSharedPreferences(getString(R.string.prefs_reddit_login), Context.MODE_PRIVATE));
     }
 
+/*    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (this.cameraURI != null) {
+            savedInstanceState.putString("CAMERA_FILE_URI", this.cameraURI.toString());
+        }
+        if (this.cameraFile != null) {
+            savedInstanceState.putString("CAMERA_FILE_PATH", this.cameraFile.toString());
+        }
+        System.out.println("saved camera URI " + this.cameraURI.toString());
+        System.out.println("saved camera file path " + this.cameraFile.toString());
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey("CAMERA_FILE_URI")) {
+            this.cameraURI = Uri.parse(savedInstanceState.getString("CAMERA_FILE_URI"));
+        }
+        if (savedInstanceState.containsKey("CAMERA_FILE_PATH")) {
+            this.cameraFile = new File(savedInstanceState.getString("CAMERA_FILE_PATH"));
+        }
+        System.out.println("loaded camera URI " + this.cameraURI.toString());
+        System.out.println("loaded camera file path " + this.cameraFile.toString());
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+*/
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -129,6 +156,9 @@ public class SubmissionActivity extends AppCompatActivity {
             }
             updateSubmissionButton();
             updateThumbnail();
+        }
+        else{
+            System.err.println("Returned from camera not OK: result " + resultCode);
         }
     }
     @Override
@@ -193,7 +223,6 @@ public class SubmissionActivity extends AppCompatActivity {
     }
 
     private void setupCameraButton() {
-        Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         try {
             setupCameraFile();
         } catch (IOException e) {
@@ -204,6 +233,7 @@ public class SubmissionActivity extends AppCompatActivity {
             this.cameraURI = FileProvider.getUriForFile(this,
                     "com.hbabaran.rsketchdaily.fileprovider",
                     this.cameraFile);
+            Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.cameraURI);
             this.cameraButton = (ImageButton) findViewById(R.id.camera_button);
             this.cameraButton.setOnClickListener(
@@ -253,7 +283,6 @@ public class SubmissionActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.CAMERA},
                     REQUEST_CAMERA_PERMISSION);
         } else {
-            //TODO test on lower build versions the assumption that manifest permissions are fine
             setupCameraButton();
         }
     }
@@ -265,7 +294,6 @@ public class SubmissionActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_WRITE_PERMISSION);
         } else {
-            //TODO test on lower build versions the assumption that manifest permissions are fine
             this.savePicsPermission = true;
         }
     }

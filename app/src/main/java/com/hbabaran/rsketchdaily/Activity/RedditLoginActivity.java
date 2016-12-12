@@ -24,7 +24,9 @@ import java.net.URL;
 public class RedditLoginActivity extends AppCompatActivity {
 
     private static final String CLIENT_ID = "0v3TmYkG3wAXaA";
-    private static final String REDIRECT_URL = "https://rsketchdaily.hbabaran.com";
+    //private static final String REDIRECT_URL = "https://rsketchdaily.hbabaran.com";
+    private static final String REDIRECT_URL =
+            "https://www.reddit.com/r/RSketchDaily/comments/5h963z/rsketchdaily_redirecting/";
     public static final Credentials CREDENTIALS = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
 
     @Override
