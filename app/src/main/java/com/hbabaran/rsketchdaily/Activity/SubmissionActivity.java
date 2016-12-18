@@ -164,6 +164,7 @@ public class SubmissionActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length < 1) return;
         switch(requestCode) {
             case REQUEST_CAMERA_PERMISSION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

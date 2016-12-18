@@ -5,10 +5,10 @@ android {
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "com.hbabaran.rsketchdaily"
-        minSdkVersion 11
+        minSdkVersion 21
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "postban-1.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
