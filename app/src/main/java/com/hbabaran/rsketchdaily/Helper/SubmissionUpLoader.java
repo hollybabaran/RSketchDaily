@@ -31,7 +31,7 @@ import java.net.URLEncoder;
  */
 
 public class SubmissionUpLoader {
-    private static final int IMAGE_MAX_SIZE = 600;
+    private static final int IMAGE_MAX_SIZE = 1000;
 
     public static String uploadToImgur(Uri image, Context context){
         try {

@@ -9,6 +9,7 @@ import com.hbabaran.rsketchdaily.Model.Comment;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.hbabaran.rsketchdaily.Model.Post;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,8 +35,8 @@ public class PostLoader {
 
 
     private static String REDDIT_URL = "https://www.reddit.com/r/";
-    //private static String SUBREDDIT_NAME = "wrentestsapps";
-    private static String SUBREDDIT_NAME = "SketchDaily";
+    private static String SUBREDDIT_NAME = "wrentestsapps";
+    //private static String SUBREDDIT_NAME = "SketchDaily";
     private static String REDDIT_DATE_REQUEST_SUFFIX = "/search.json?q=timestamp%3A";
     private static String URL_MIDFIX = "..";
     private static String URL_SUFFIX = "&sort=new&restrict_sr=on&syntax=cloudsearch";
@@ -49,8 +50,6 @@ public class PostLoader {
         return post;
     }
 
-    //TODO figure out what happens if there are two posts on one day (eg someone made a sticky) and handle that case
-    //perhaps ensure that the url list is sorted by date and then get the first one (posted at 3am typically)
     private static JSONObject getPostJSONByDate(Date date) {
         URL url;
         String redditJSONStr;
@@ -60,7 +59,8 @@ public class PostLoader {
             url = buildPostURLByDate(date);
             redditJSONStr = downloadJSONStr(url);
             frontJson = new JSONObject(redditJSONStr);
-            post = frontJson.getJSONObject("data").getJSONArray("children").getJSONObject(0);
+            JSONArray posts = frontJson.getJSONObject("data").getJSONArray("children");
+            post = posts.getJSONObject(posts.length()-1); //always get the oldest post of the day
         } catch (MalformedURLException e) {
             System.err.println(e);
             return null;

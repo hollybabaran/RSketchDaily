@@ -7,8 +7,8 @@ android {
         applicationId "com.hbabaran.rsketchdaily"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 4
-        versionName "postban-1.01"
+        versionCode 6
+        versionName "postban-1.02"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -43,11 +43,12 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.tumblr:jumblr:0.0.11'
     compile 'com.android.support:design:24.2.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'net.dean.jraw:JRAW:0.9.0'
+    compile 'com.android.support:support-v4:24.2.1'
+    testCompile 'junit:junit:4.12'
 }

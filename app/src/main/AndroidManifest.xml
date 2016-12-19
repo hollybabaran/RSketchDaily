@@ -10,7 +10,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_rsketchdaily"
@@ -32,8 +31,7 @@
 
         <activity
             android:name=".Activity.SubmissionActivity"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -48,7 +46,10 @@
         <activity
             android:name=".Activity.RedditLoginActivity"
             android:label="@string/title_activity_reddit_login" />
-        <activity android:name=".Activity.CommentActivity"></activity>
+        <activity android:name=".Activity.CommentActivity" />
+        <activity
+            android:name=".Activity.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
