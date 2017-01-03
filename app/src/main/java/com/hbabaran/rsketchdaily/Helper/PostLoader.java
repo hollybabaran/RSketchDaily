@@ -54,13 +54,15 @@ public class PostLoader {
         URL url;
         String redditJSONStr;
         JSONObject frontJson;
-        JSONObject post;
+        JSONObject post = null;
         try {
             url = buildPostURLByDate(date);
             redditJSONStr = downloadJSONStr(url);
             frontJson = new JSONObject(redditJSONStr);
             JSONArray posts = frontJson.getJSONObject("data").getJSONArray("children");
-            post = posts.getJSONObject(posts.length()-1); //always get the oldest post of the day
+            if(posts.length() > 0){ //always get the oldest post of the day
+                post = posts.getJSONObject(posts.length()-1);
+            }
         } catch (MalformedURLException e) {
             System.err.println(e);
             return null;

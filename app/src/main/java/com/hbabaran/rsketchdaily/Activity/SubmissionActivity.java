@@ -14,6 +14,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,6 +72,16 @@ public class SubmissionActivity extends AppCompatActivity {
 
     private Boolean savePicsPermission;
 
+/*    public class settingsListener implements View.OnClickListener{
+        public void onClick(View view){
+            startActivity(new Intent(getParent(), SettingsActivity.class));
+        }
+    } */
+
+    public void onSettingsClick(MenuItem menuItem){
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +110,14 @@ public class SubmissionActivity extends AppCompatActivity {
         this.redditLogin = new RedditLogin(getApplicationContext().
                 getSharedPreferences(getString(R.string.prefs_reddit_login), Context.MODE_PRIVATE));
     }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.submission_menu, menu);
+        return true;
+    }
+
 
 /*    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {

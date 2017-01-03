@@ -2,11 +2,13 @@ package com.hbabaran.rsketchdaily.Helper;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.google.gson.JsonElement;
@@ -31,7 +33,6 @@ import java.net.URLEncoder;
  */
 
 public class SubmissionUpLoader {
-    private static final int IMAGE_MAX_SIZE = 1000;
 
     public static String uploadToImgur(Uri image, Context context){
         try {
@@ -95,6 +96,9 @@ public class SubmissionUpLoader {
         BitmapFactory.decodeStream(fis, null, o);
         fis.close();
         int scale = 1;
+        int IMAGE_MAX_SIZE = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("upload_resolution", "1000"));
+        System.out.println("uploading with max resolution " + IMAGE_MAX_SIZE);
         if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
             scale = (int)Math.pow(2, (int) Math.ceil(Math.log(IMAGE_MAX_SIZE /
                     (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));

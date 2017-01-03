@@ -31,7 +31,7 @@
 
         <activity
             android:name=".Activity.SubmissionActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
