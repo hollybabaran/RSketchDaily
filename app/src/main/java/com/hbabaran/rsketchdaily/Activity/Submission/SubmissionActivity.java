@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily.Activity;
+package com.hbabaran.rsketchdaily.Activity.Submission;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,6 +24,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hbabaran.rsketchdaily.Activity.CommentActivity;
+import com.hbabaran.rsketchdaily.Activity.RedditLoginActivity;
+import com.hbabaran.rsketchdaily.Activity.Settings.SettingsActivity;
 import com.hbabaran.rsketchdaily.Helper.PostLoader;
 import com.hbabaran.rsketchdaily.Helper.RedditLogin;
 import com.hbabaran.rsketchdaily.Model.Date;
@@ -72,11 +75,7 @@ public class SubmissionActivity extends AppCompatActivity {
 
     private Boolean savePicsPermission;
 
-/*    public class settingsListener implements View.OnClickListener{
-        public void onClick(View view){
-            startActivity(new Intent(getParent(), SettingsActivity.class));
-        }
-    } */
+
 
     public void onSettingsClick(MenuItem menuItem){
         startActivity(new Intent(this, SettingsActivity.class));
@@ -380,7 +379,7 @@ public class SubmissionActivity extends AppCompatActivity {
         }
     }
 
-    public class submitButtonOnClickListener implements View.OnClickListener{
+    private class submitButtonOnClickListener implements View.OnClickListener{
         public Submission submission;
         public SubmissionActivity activity;
         public submitButtonOnClickListener(Submission submission, SubmissionActivity activity){

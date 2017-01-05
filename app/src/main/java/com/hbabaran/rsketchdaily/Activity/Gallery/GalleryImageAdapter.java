@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily.Activity.View;
+package com.hbabaran.rsketchdaily.Activity.Gallery;
 
 import android.content.Context;
 import android.content.res.Resources;

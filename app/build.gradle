@@ -7,8 +7,8 @@ android {
         applicationId "com.hbabaran.rsketchdaily"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 6
-        versionName "postban-1.02"
+        versionCode 8
+        versionName "settings-1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

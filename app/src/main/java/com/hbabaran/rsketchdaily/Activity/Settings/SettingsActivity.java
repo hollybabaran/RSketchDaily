@@ -1,13 +1,11 @@
-package com.hbabaran.rsketchdaily.Activity;
+package com.hbabaran.rsketchdaily.Activity.Settings;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 
-import com.hbabaran.rsketchdaily.R;
-
 public class SettingsActivity extends Activity
-        implements SettingsFragment.OnFragmentInteractionListener{
+        implements SettingsFragment.OnFragmentInteractionListener {
 
 
     protected void onCreate(Bundle savedInstanceState) {

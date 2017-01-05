@@ -6,6 +6,8 @@
     <string name="command_submit">Submit a Sketch</string>
     <string name="command_view_archives">View Older Posts</string>
     <string name="command_settings">Settings</string>
+    <string name="command_view_prev_day">View Previous Day</string>
+    <string name="command_view_next_day">View Next Day</string>
 
     <string name="submission_missing_post">Reddit not loaded, wait or try again later</string>
     <string name="submission_missing_image">Please pick an image to submit</string>
@@ -43,10 +45,10 @@
 
     <string name="pref_title_upload_resolution">Upload resolution</string>
     <string-array name="pref_upload_resolution_titles">
-        <item>Low</item>
+        <item>Low   (fast, low data)</item>
         <item>Medium</item>
         <item>High</item>
-        <item>Ultra</item>
+        <item>Ultra (slow, high data)</item>
     </string-array>
     <string-array name="pref_upload_resolution_values">
         <item>750</item>

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionActivity;
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionSwipeActivity;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -24,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putLong("date", Date.getUnixMintime(Calendar.getInstance()));
         //Intent startToday = new Intent(this, GalleryActivity.class);
-        Intent startToday = new Intent(this, SubmissionActivity.class);
+        //Intent startToday = new Intent(this, SubmissionActivity.class);
+        Intent startToday = new Intent(this, SubmissionSwipeActivity.class);
         startToday.putExtras(bundle);
         startActivity(startToday);
         finish();

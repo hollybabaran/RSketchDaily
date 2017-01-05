@@ -3,6 +3,7 @@ package com.hbabaran.rsketchdaily.Model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by wren on 18/10/2016.
@@ -59,8 +60,9 @@ public class Date implements Serializable {
         return maxtime.getTimeInMillis() / 1000L + EIGHT_HRS_IN_SECONDS;
     }
 
-    public static Date getYesterday(Date today){
-        return new Date(today.getUnix_mintime() - TWENTY_FOUR_HRS_IN_SECONDS);
+
+    public static Date getPastDate(Date today, int offsetFromToday){
+        return new Date(today.getUnix_mintime() - (TWENTY_FOUR_HRS_IN_SECONDS * offsetFromToday));
     }
 
     public Date(Calendar date){
@@ -71,6 +73,18 @@ public class Date implements Serializable {
     public Date(long uTime){
         this.unix_mintime = Date.getUnixMintime(uTime);
         this.unix_maxtime = Date.getUnixMaxtime(uTime);
+    }
+
+    public Date(){
+        this.unix_mintime = Date.getUnixMintime(Calendar.getInstance());
+        this.unix_maxtime = Date.getUnixMaxtime(Calendar.getInstance());
+    }
+
+    public String toString(){
+        Calendar uTime = Calendar.getInstance();
+        uTime.setTimeInMillis(this.unix_mintime*1000L);
+        String month = uTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        return month + " " + uTime.get(Calendar.DAY_OF_MONTH);
     }
 
     //convert to primitive for parcelable

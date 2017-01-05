@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily.Activity;
+package com.hbabaran.rsketchdaily.Activity.Settings;
 
 import android.content.Context;
 import android.net.Uri;

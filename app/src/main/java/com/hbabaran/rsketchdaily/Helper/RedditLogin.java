@@ -1,13 +1,9 @@
 package com.hbabaran.rsketchdaily.Helper;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.hbabaran.rsketchdaily.Activity.RedditLoginActivity;
-import com.hbabaran.rsketchdaily.Activity.SubmissionActivity;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.auth.AuthenticationManager;
@@ -15,7 +11,6 @@ import net.dean.jraw.auth.AuthenticationState;
 import net.dean.jraw.auth.NoSuchTokenException;
 import net.dean.jraw.auth.RefreshTokenHandler;
 import net.dean.jraw.auth.TokenStore;
-import net.dean.jraw.auth.VolatileTokenStore;
 import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthException;

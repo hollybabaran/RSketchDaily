@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 
-import com.hbabaran.rsketchdaily.Activity.GalleryActivity;
+import com.hbabaran.rsketchdaily.Activity.Gallery.GalleryActivity;
 import com.hbabaran.rsketchdaily.Model.Comment;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.hbabaran.rsketchdaily.Helper.PostLoader;
 import com.hbabaran.rsketchdaily.Model.Post;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import static java.lang.String.valueOf;

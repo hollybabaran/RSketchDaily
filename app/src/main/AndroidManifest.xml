@@ -23,14 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.GalleryActivity" />
+        <activity android:name=".Activity.Gallery.GalleryActivity" />
 
         <service
             android:name=".Service.GalleryService"
             android:exported="false" />
 
         <activity
-            android:name=".Activity.SubmissionActivity"
+            android:name=".Activity.Submission.SubmissionActivity"
             android:launchMode="singleTask" />
 
         <provider
@@ -48,8 +48,9 @@
             android:label="@string/title_activity_reddit_login" />
         <activity android:name=".Activity.CommentActivity" />
         <activity
-            android:name=".Activity.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:name=".Activity.Settings.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".Activity.Submission.SubmissionSwipeActivity"></activity>
     </application>
 
 </manifest>

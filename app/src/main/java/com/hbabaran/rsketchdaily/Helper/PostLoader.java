@@ -44,7 +44,7 @@ public class PostLoader {
     public static Post getPostByDate(Date today) {
         Post post = new Post(today, getPostJSONByDate(today));
         if(post.getID() == ""){ //could not load today probably because it's midnight - 3am; try yesterday
-            Date yesterday = Date.getYesterday(today);
+            Date yesterday = Date.getPastDate(today, 1);
             post = new Post(yesterday, getPostJSONByDate(yesterday));
         }
         return post;

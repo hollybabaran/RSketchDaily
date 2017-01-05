@@ -2,10 +2,12 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <item android:id="@+id/command_submit"
+        android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/command_settings"
         android:orderInCategory="100"
-        app:showAsAction="never"
+        app:showAsAction="always"
         android:onClick="onSettingsClick"
         />
     <!--<item android:id="@+id/command_view_archives"

@@ -1,4 +1,4 @@
-package com.hbabaran.rsketchdaily.Activity;
+package com.hbabaran.rsketchdaily.Activity.Gallery;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import com.hbabaran.rsketchdaily.Activity.View.GalleryImageAdapter;
+import com.hbabaran.rsketchdaily.Activity.CommentActivity;
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionActivity;
 import com.hbabaran.rsketchdaily.Service.GalleryService;
 import com.hbabaran.rsketchdaily.R;
 

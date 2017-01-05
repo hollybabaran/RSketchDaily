@@ -5,8 +5,9 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 
-import com.hbabaran.rsketchdaily.Activity.SubmissionActivity;
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionPageFragment;
 import com.hbabaran.rsketchdaily.Helper.SubmissionUpLoader;
+import com.hbabaran.rsketchdaily.R;
 
 import net.dean.jraw.RedditClient;
 
@@ -22,6 +23,10 @@ import java.nio.channels.FileChannel;
 
 public class Submission {
 
+
+    private static final int MESSAGE_MISSING_POST = R.string.submission_missing_post;
+    private static final int MESSAGE_MISSING_IMAGE = R.string.submission_missing_image;
+    private static final int MESSAGE_MISSING_COMMENT = R.string.submission_missing_comment;
 
     private String postID;
     private Uri image;
@@ -73,10 +78,10 @@ public class Submission {
     private boolean hasImageFile() { return (this.imageFile != null); }
 
     public int isValidSubmission(){
-        if(!hasPost()) return SubmissionActivity.MESSAGE_MISSING_POST;
-        if(!hasImageURI()) return SubmissionActivity.MESSAGE_MISSING_IMAGE;
-        if(!hasComment()) return SubmissionActivity.MESSAGE_MISSING_COMMENT;
-        return SubmissionActivity.SUBMISSION_VALID;
+        if(!hasPost()) return MESSAGE_MISSING_POST;
+        if(!hasImageURI()) return MESSAGE_MISSING_IMAGE;
+        if(!hasComment()) return MESSAGE_MISSING_COMMENT;
+        return SubmissionPageFragment.SUBMISSION_VALID;
     }
 
     public Boolean submissionSuccessful(){
