@@ -82,7 +82,6 @@ public class SubmissionPageFragment extends Fragment {
         this.postDate = new Date(bundle.getLong(ARG_DATE)).toPrimitive();
         this.cameraPermission = false;
         this.cameraPermission = bundle.getBoolean(ARG_CAM_PERMISSION);
-        System.out.println("cam permission: " + this.cameraPermission);
 
         //this.submission.setPost(bundle.getString("id")); //TODO add back for when gallery view is a thing
         //this.postTitle = bundle.getString("title");

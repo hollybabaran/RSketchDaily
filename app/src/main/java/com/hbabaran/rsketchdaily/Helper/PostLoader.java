@@ -35,8 +35,8 @@ public class PostLoader {
 
 
     private static String REDDIT_URL = "https://www.reddit.com/r/";
-    private static String SUBREDDIT_NAME = "wrentestsapps";
-    //private static String SUBREDDIT_NAME = "SketchDaily";
+    //private static String SUBREDDIT_NAME = "wrentestsapps";
+    private static String SUBREDDIT_NAME = "SketchDaily";
     private static String REDDIT_DATE_REQUEST_SUFFIX = "/search.json?q=timestamp%3A";
     private static String URL_MIDFIX = "..";
     private static String URL_SUFFIX = "&sort=new&restrict_sr=on&syntax=cloudsearch";

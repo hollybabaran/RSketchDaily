@@ -53,5 +53,9 @@ public class SubmissionPagerAdapter extends FragmentStatePagerAdapter {
         //SubmissionPageFragment frag = (SubmissionPageFragment)getItem(position);
         //return frag.getPostTitle();
     }
+
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 }
 

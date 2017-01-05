@@ -80,21 +80,14 @@ public class SubmissionSwipeActivity extends AppCompatActivity {
     }
 
     private void disableCameraButton(){
-        SubmissionPageFragment currPage = (SubmissionPageFragment)
-                getSupportFragmentManager().findFragmentByTag(
-                "android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
-        if(currPage != null) currPage.disableCameraButton();
         mSubmissionPagerAdapter.setCamPermission(false, (ViewGroup) findViewById(android.R.id.content));
-        //mSubmissionPagerAdapter.notifyDataSetChanged();
+        mSubmissionPagerAdapter.notifyDataSetChanged();
     }
 
     private void setupCameraButton(){
-        SubmissionPageFragment currPage = (SubmissionPageFragment)
-                getSupportFragmentManager().findFragmentByTag(
-                        "android:switcher:" + R.id.pager + ":" + mViewPager.getCurrentItem());
-        if(currPage != null) currPage.setupCameraButton();
+
         mSubmissionPagerAdapter.setCamPermission(true, (ViewGroup) findViewById(android.R.id.content));
-        //mSubmissionPagerAdapter.notifyDataSetChanged();
+        mSubmissionPagerAdapter.notifyDataSetChanged();
     }
 
 
