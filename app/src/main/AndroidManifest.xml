@@ -29,9 +29,6 @@
             android:name=".Service.GalleryService"
             android:exported="false" />
 
-        <activity
-            android:name=".Activity.Submission.SubmissionActivity"
-            android:launchMode="singleTask" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -52,5 +49,6 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".Activity.Submission.SubmissionSwipeActivity"></activity>
     </application>
+
 
 </manifest>

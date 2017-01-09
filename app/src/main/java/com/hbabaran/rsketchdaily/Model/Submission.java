@@ -101,13 +101,12 @@ public class Submission {
                 });
         return true;
     }
-    private static String APPNAME = "RSketchDaily"; //TODO organize this better...
     private File savePermanentImage(File source){
         File destination;
         try {
             File picsDir = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES).getPath() +
-                    File.separatorChar + APPNAME);
+                    File.separatorChar + R.string.app_name);
             if(!picsDir.exists()) picsDir.mkdir();
             destination = new File( picsDir.getAbsolutePath() +
                     File.separatorChar + source.getName());

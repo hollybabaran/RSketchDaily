@@ -2,8 +2,10 @@ package com.hbabaran.rsketchdaily.Activity.Submission;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -28,13 +30,16 @@ import com.hbabaran.rsketchdaily.Model.Post;
 import com.hbabaran.rsketchdaily.Model.Submission;
 import com.hbabaran.rsketchdaily.R;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /**
  * Created by wren on 1/3/2017.
@@ -100,7 +105,7 @@ public class SubmissionPageFragment extends Fragment {
         }
     }
 
-    @Override //TODO I believe this is only called the *first* time it's visible
+    @Override //this is only called the *first* time it's visible
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         setupDone = false;
@@ -144,6 +149,67 @@ public class SubmissionPageFragment extends Fragment {
 
 
 
+
+
+
+    private void setupGalleryPhotoChooserButton() {
+        this.galleryPhotoChooserButton = (ImageButton) getView().findViewById(R.id.gallery_photo_chooser_button);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        this.galleryPhotoChooserButton.setOnClickListener(
+                new IntentResultListener(photoPickerIntent, PHOTO_FROM_GALLERY));
+    }
+
+
+
+
+    private void setupCommentBox(){
+        this.commentBox = (EditText)getView().findViewById(R.id.comment_box);
+        if(this.savedComment == null){
+            String[] default_comments = getResources().getStringArray(R.array.default_comments);
+            this.savedComment = default_comments[new Random().nextInt(default_comments.length)];
+        }
+        this.commentBox.setText(this.savedComment);
+    }
+
+    private void setupCameraFile() throws IOException {
+        File storageDir;
+        storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        System.out.println(storageDir.toString());
+        this.cameraFile = File.createTempFile(
+                "submission_" + this.postDate,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir     /* directory */
+        );
+
+
+    }
+
+    public void setupCameraButton() {
+        try {
+            setupCameraFile();
+        } catch (IOException e) {
+            System.err.println("could not make photo file: " + e + "\nDisabling camera.");
+            disableCameraButton();
+        }
+        if (this.cameraFile != null) {
+            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT){
+                this.cameraURI = Uri.fromFile(this.cameraFile);
+            } else {
+                this.cameraURI = FileProvider.getUriForFile(getActivity(),
+                        "com.hbabaran.rsketchdaily.fileprovider",
+                        this.cameraFile);
+            }
+            System.out.println("camera URI is " + this.cameraURI);
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.cameraURI);
+            this.cameraButton = (ImageButton) getView().findViewById(R.id.camera_button);
+            this.cameraButton.setOnClickListener(
+                    new IntentResultListener(cameraIntent, PHOTO_FROM_CAMERA));
+        }
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -164,63 +230,12 @@ public class SubmissionPageFragment extends Fragment {
             updateThumbnail();
         }
         else{
-            System.err.println("Returned from camera not OK: result " + resultCode);
+            System.err.println("Returned from camera not OK: result " + resultCode +
+                    ", data " + data);
+            System.err.println("camera URI is : " + this.cameraURI);
         }
     }
 
-
-    private void setupGalleryPhotoChooserButton() {
-        this.galleryPhotoChooserButton = (ImageButton) getView().findViewById(R.id.gallery_photo_chooser_button);
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        this.galleryPhotoChooserButton.setOnClickListener(
-                new IntentResultListener(photoPickerIntent, PHOTO_FROM_GALLERY));
-    }
-
-
-    private void setupCameraFile() throws IOException {
-        //TODO Request permission to write to shared directory??
-        //TODO if this is making a temp file, how to save it into a permanent file??
-        //File storageDir = getExternalStoragePublicDirectory((Environment.DIRECTORY_PICTURES));
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        System.out.println(storageDir.toString());
-        this.cameraFile = File.createTempFile(
-                "submission_" + this.postDate,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir     /* directory */
-        );
-    }
-
-
-
-    private void setupCommentBox(){
-        this.commentBox = (EditText)getView().findViewById(R.id.comment_box);
-        if(this.savedComment == null){
-            String[] default_comments = getResources().getStringArray(R.array.default_comments);
-            this.savedComment = default_comments[new Random().nextInt(default_comments.length)];
-        }
-        this.commentBox.setText(this.savedComment);
-    }
-
-    public void setupCameraButton() {
-        try {
-            setupCameraFile();
-        } catch (IOException e) {
-            System.err.println("could not make photo file: " + e + "\nDisabling camera.");
-            disableCameraButton();
-        }
-        if (this.cameraFile != null) {
-            this.cameraURI = FileProvider.getUriForFile(getActivity(),
-                    "com.hbabaran.rsketchdaily.fileprovider",
-                    this.cameraFile);
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.cameraURI);
-            this.cameraButton = (ImageButton) getView().findViewById(R.id.camera_button);
-            this.cameraButton.setOnClickListener(
-                    new IntentResultListener(cameraIntent, PHOTO_FROM_CAMERA));
-        }
-
-    }
 
     private class IntentResultListener implements View.OnClickListener {
         private Intent intent;
