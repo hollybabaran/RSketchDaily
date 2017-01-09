@@ -152,6 +152,8 @@ public class SubmissionPageFragment extends Fragment {
 
 
 
+
+
     private void setupGalleryPhotoChooserButton() {
         this.galleryPhotoChooserButton = (ImageButton) getView().findViewById(R.id.gallery_photo_chooser_button);
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -301,17 +303,25 @@ public class SubmissionPageFragment extends Fragment {
         }
     }
 
+    public void notifyHeavyLoad(){
+        Toast.makeText(getActivity(), R.string.net_err_503, Toast.LENGTH_LONG).show();
+    }
+
     public class downloadPostInfo extends AsyncTask<Long, Void, List<String>> {
         protected List<String> doInBackground(Long... date) {
             Post post = PostLoader.getPostByDate(new Date(date[0]));
             List<String> postInfo = new ArrayList<>();
             postInfo.add(post.getTitle());
             postInfo.add(post.getID().toString());
+            postInfo.add(post.recievedWarnHeavyLoad() ? "true" : "false");
             return postInfo;
         }
 
         protected void onPostExecute(List<String> postInfo) {
             updatePostInfo(postInfo.get(0), postInfo.get(1));
+            if(postInfo.get(2).equals("true")){
+                notifyHeavyLoad();
+            }
         }
     }
 

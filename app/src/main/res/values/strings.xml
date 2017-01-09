@@ -2,6 +2,7 @@
     <string name="subreddit_url">https://www.reddit.com/r/sketchdaily.json</string>
     <string name="app_name">RSketchDaily</string>
     <string name="loading">Loading...</string>
+    <string name="net_err_503">Reddit under heavy load; try again later</string>
 
     <string name="command_submit">Submit a Sketch</string>
     <string name="command_view_archives">View Older Posts</string>

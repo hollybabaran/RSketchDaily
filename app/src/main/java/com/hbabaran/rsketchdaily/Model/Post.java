@@ -29,6 +29,7 @@ public class Post {
     private String id;
     ArrayList<Comment> comments;
     private SortMethod sortMethod;
+    private Boolean heavyLoad;
 
 
     public Post(Date date, JSONObject post){
@@ -39,6 +40,7 @@ public class Post {
         this.postURL = null;
         this.comments = new ArrayList<Comment>();
         this.id = "";
+        this.heavyLoad = false;
         if (post != null) {
             try {
                 this.title = post.getJSONObject("data").getString("title");
@@ -75,7 +77,8 @@ public class Post {
         return this.id;
     }
 
-
+    public void warnHeavyLoad(){this.heavyLoad = true;}
+    public boolean recievedWarnHeavyLoad(){ return this.heavyLoad; }
 
 
     //TODO: some sort of caching of the comments / "updatecomments"

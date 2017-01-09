@@ -5,9 +5,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionPageFragment;
 import com.hbabaran.rsketchdaily.Model.Comment;
 import com.hbabaran.rsketchdaily.Model.Date;
 import com.hbabaran.rsketchdaily.Model.Post;
+import com.hbabaran.rsketchdaily.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +34,12 @@ import static java.lang.String.valueOf;
 
 //static class containing BLOCKING methods that connect to the internet
 public class PostLoader {
-
+    public static class RedditHeavyLoadException extends IOException {
+        private String message = "Reddit servers are under heavy load right now.";
+        public String toString(){
+            return message;
+        }
+    }
 
     private static String REDDIT_URL = "https://www.reddit.com/r/";
     //private static String SUBREDDIT_NAME = "wrentestsapps";
@@ -41,16 +48,22 @@ public class PostLoader {
     private static String URL_MIDFIX = "..";
     private static String URL_SUFFIX = "&sort=new&restrict_sr=on&syntax=cloudsearch";
 
-    public static Post getPostByDate(Date today) {
-        Post post = new Post(today, getPostJSONByDate(today));
-        if(post.getID() == ""){ //could not load today probably because it's midnight - 3am; try yesterday
-            Date yesterday = Date.getPastDate(today, 1);
-            post = new Post(yesterday, getPostJSONByDate(yesterday));
+    public static Post getPostByDate(Date today){
+        Post post;
+        try {
+            post = new Post(today, getPostJSONByDate(today));
+            if (post.getID() == "") { //could not load today probably because it's midnight - 3am; try yesterday
+                Date yesterday = Date.getPastDate(today, 1);
+                post = new Post(yesterday, getPostJSONByDate(yesterday));
+            }
+        }catch (RedditHeavyLoadException e){
+            post = new Post(today, null);
+            post.warnHeavyLoad();
         }
         return post;
     }
 
-    private static JSONObject getPostJSONByDate(Date date) {
+    private static JSONObject getPostJSONByDate(Date date) throws RedditHeavyLoadException{
         URL url;
         String redditJSONStr;
         JSONObject frontJson;
@@ -68,6 +81,9 @@ public class PostLoader {
             return null;
         } catch (IOException e) {
             System.err.println(e);
+            if(e.toString().contains("503")){
+                throw new RedditHeavyLoadException();
+            }
             return null;
         } catch (JSONException e) {
             System.err.println(e);

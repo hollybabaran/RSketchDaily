@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.hbabaran.rsketchdaily.Activity.CommentActivity;
-import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionActivity;
+import com.hbabaran.rsketchdaily.Activity.Submission.SubmissionSwipeActivity;
 import com.hbabaran.rsketchdaily.Service.GalleryService;
 import com.hbabaran.rsketchdaily.R;
 
@@ -139,7 +139,7 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     private void setSubmissionButtonIntent(Bundle extras){
-        Intent submissionIntent = new Intent(this, SubmissionActivity.class);
+        Intent submissionIntent = new Intent(this, SubmissionSwipeActivity.class);
         submissionIntent.putExtras(extras);
         this.submission_fab = (FloatingActionButton) findViewById(R.id.submission_fab);
         this.submission_fab.setOnClickListener(new submissionListener(submissionIntent));
